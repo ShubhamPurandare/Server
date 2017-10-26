@@ -1,0 +1,8 @@
+
+exports.subsResc = function(){
+
+
+	
+
+}
+

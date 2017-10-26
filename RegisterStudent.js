@@ -5,6 +5,7 @@ exports.registerStudent = function(clients, data , callback , socket , db ){
 			var jsonData = JSON.parse(data);
 			var data1 = jsonData.Array;
 			var Grumber = jsonData.grNumber;
+			var div = jsonData.div;
 			var c = db.collection("Subjects");
 			var field = data1.split(',');
 			
@@ -21,7 +22,7 @@ exports.registerStudent = function(clients, data , callback , socket , db ){
 				console.log(str2);
 				var str3 = str2.replace("]" , "");
 				console.log(str3);
-				sendData(socket , clients, db , str3 ,Grumber );
+				sendData(socket , clients, db , str3 ,Grumber, div );
 				i++;	
 				
 			}
@@ -36,7 +37,7 @@ exports.registerStudent = function(clients, data , callback , socket , db ){
 }
 
 
-function sendData(socket ,clients , db ,  code, Grumber ){
+function sendData(socket ,clients , db ,  code, Grumber , div ){
 			 var c = db.collection("Subjects");
 			
 			
@@ -48,7 +49,7 @@ function sendData(socket ,clients , db ,  code, Grumber ){
 
 				if(result.length == 0 ){
 					console.log("NO data found");
-					console.log("We are registering the first student for this subject :"+code + " where value of i is ");
+					console.log("We are registering the first student for this subject :"+code + " for div  "+div);
 					
 					c.insert({ _id: code , students: [ Grumber] })
 					console.log("Inserted successfully!");
@@ -61,26 +62,16 @@ function sendData(socket ,clients , db ,  code, Grumber ){
 				}else{
 				
 				
-				c.find( {_id:code }, { students : { $elemMatch :{$eq: Grumber } } }).toArray(function(err, result){
+				c.find( {_id:code }/*, { students : { $elemMatch :{$eq: Grumber } } }   */).toArray(function(err, result){
 				
-					if(error)throw err;
-
-				if(result.length == 0 ){
+				console.log("Result is "+JSON.stringify(result));
+				var obj = result[0];
 				
-					c.update( {"_id" :code } , {$push : { "subjects": Grumber  } }  );
-					console.log("Grnumber "+Grumber +" registered for Subject :"+code);
-					
-					
-			
-
+				c.update( {"_id" :code } , {$addToSet : { students : Grumber  } }  );
+				console.log("Student with GR Number "+Grumber +" registered successfuly");
+						
 				
-				}else{
 				
-					console.log("Grnumber "+Grumber +" already registered for Subject :"+code);
-					
-					
-			
-				}
 				
 				});
 				

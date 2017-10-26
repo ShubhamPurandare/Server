@@ -8,9 +8,10 @@ exports.facultySubjects = function(clients, facultySubjColl, socket, db , jsonob
 
 console.log("In facultySubjects method");
 			var data = JSON.parse(jsonobj); //convert into json obj
-			var name = data.Name;
+			var eid = data.EID;
 			var branch = data.Branch;
 			var sem = data.Sem;
+			console.log("EID "+eid + " branch "+branch + " Sem "+sem);
 			var TE = [];
 			var SE = [];
 			var BE = [];
@@ -27,7 +28,7 @@ console.log("In facultySubjects method");
 			
 					for(var i=0 ; i<object.length; i++){
 						var temp = object[i];
-						if( temp.Faculty == name   ){
+						if( temp.FacultyCode == eid   ){
 				
 							console.log("Match found ");
 							console.log(temp);
@@ -39,6 +40,7 @@ console.log("In facultySubjects method");
 							var obj1 = {}
 							obj1["Subject"] = temp.Subject;
 							obj1["Div"] = div;
+							obj1["SubjCode"] = temp.SubjectCode;
 							 
 					
 							switch(year){

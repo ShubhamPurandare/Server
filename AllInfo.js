@@ -1,6 +1,9 @@
 
 exports.allInfo = function(clients, data , db , socket ){
 
+var roomCol = db.collection("Rooms");
+
+
 console.log("In Allinfo listener...");
 		var object = JSON.parse(data);
 		var info = object.obj;
@@ -71,10 +74,41 @@ console.log("In Allinfo listener...");
 					socket.disconnect();
 					clients--;
 					console.log("Client disconnected.... and clients are "+clients);
+					
+/*function validateDBOperation(object , collection , priKey){
+
+	collection.find({ "_id" :priKey  }).toArray( function(error , result){
+	
+		console.log("Object for primary key "+priKey +" is "+result);
+		var obj = result[0];
+		console.log("obj is "+obj);
+		if(object == obj){
+			console.log("Objects are equal");
+		}else{
+		
+			console.log("Objects are not equal");
+		
+			}
+		
+	
+		});
+	}*/
 			
 					
 	
 		});
+		
+		if(collectionName == "Load_Time_Table"){
+			console.log("Calling function loadUsedRooms");
+			//loadUsedRooms(object , grNumber) ;	
+		}
+		
+		//validateDBOperation(info ,grNumber , c);
+					
+		
 
 
 }
+
+
+

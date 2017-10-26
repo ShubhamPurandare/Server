@@ -8,7 +8,7 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 			var arrayOfTokens = data.ArrayOftokens;
 			console.log("Tokens are :"+arrayOfTokens);
 			
-			var name = "shubham purandare"
+			var EID = data.Name;
 			var branch = "Computer"
 			var sem = "Sem2"
 			var token = "ComputerTESem2C"
@@ -18,15 +18,11 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 			var thrus = [];
 			var fri = [];
 			var sat = [];
-			var tokens = new Array("Monday","Tuesday", "Wednesday","Friday", "Saturday");
+			var tokens = new Array("Monday","Tuesday", "Wednesday","Thursday","Friday", "Saturday");
 			var object = {}; 
-			console.log(tokens);
+			//console.log(tokens);
 			
-			if(arrayOfTokens.indexOf(token) != -1  ){
 			
-				console.log("valid token");
-			
-			}
 		
 		
 			TTFacultyColl.find().forEach(  function(doc){
@@ -49,7 +45,10 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 					console.log(week.length);
 					for(var j=0 ; j<week.length; j++){
 						var temp = week[j];
-						if( temp.Staff == name ){
+						
+						console.log("Temp is "+JSON.stringify(temp)+"staffID is "+temp.StaffEID + "  EID is "+EID);
+						if( temp.StaffEID == EID ){
+
 				
 							console.log("Match found ");
 							var div = id.substr(-1);
@@ -74,7 +73,7 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 								
 								break;
 						
-								case 'Thrusday' : thrus.push(temp);
+								case 'Thursday' : thrus.push(temp);
 								break;
 								
 								case 'Friday' : fri.push(temp);
@@ -98,7 +97,7 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 							object["Monday"] = mon;
 							object["Tuesday"] = tues;
 							object["Wednesday"] = wed;
-							object["Thrusday"] = thrus;
+							object["Thursday"] = thrus;
 							object["Friday"] = fri;
 							object["Saturday"] = sat;
 							console.log("Final object is "+object);
