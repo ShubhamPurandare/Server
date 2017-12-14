@@ -92,7 +92,7 @@ console.log("In Allinfo listener...");
 		
 	
 		});
-	}
+	}*/
 			
 					
 	
@@ -103,7 +103,7 @@ console.log("In Allinfo listener...");
 			//loadUsedRooms(object , grNumber) ;	
 		}
 		
-		validateDBOperation(info ,grNumber , c);*/
+		//validateDBOperation(info ,grNumber , c);
 					
 		
 

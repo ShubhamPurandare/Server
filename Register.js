@@ -34,14 +34,40 @@ exports.register = function(clients, user, socket , users){
 			console.log("name is "+firstName + " lastname is "+lastName);
 			
 			
-			users.find({_id:grNumber}).toArray(function(err,data){
+			users.find({username : username }).toArray(function(err,data){
 			
 				if(err){
 						throw error;
 					}else{
 						if(data.length == 1){
-							console.log("User is already registered for GRNUMBER : "+grNumber);
+							console.log("Username exists  : "+username );
+							
+							if(data._id == grNumber  ){
+								// same user is registering again
+								console.log(" same user is registering again  : "+username );
+								authComplete=3;
+								socket.emit('registerResult' , authComplete);
+								console.log("Emmiting socket");
+			
+							
+							}else{
+							
+								// this username already exists.
+								authComplete=2;	
+									console.log(" try diff username  : "+username );
+									socket.emit('registerResult' , authComplete);
+									console.log("Emmiting socket");
+			
+							
+							}
+							
 						}else{
+						
+								
+							
+			
+						
+						
 						
 						
 						users.insert( { _id :grNumber, username : username , email : email , password :password,  branch : branch ,
@@ -50,6 +76,8 @@ exports.register = function(clients, user, socket , users){
 									console.log("Error in registeration");
 									authComplete=0;
 									socket.emit('registerResult' , authComplete);
+									console.log("Emmiting socket");
+			
 		
 								}else{
 									var fullName = firstName+" "+lastName;
@@ -57,7 +85,10 @@ exports.register = function(clients, user, socket , users){
 									console.log("Inserted in database successfully.. ");
 									authComplete = 1;
 									socket.emit('registerResult' , authComplete);
-		
+									console.log("Emmiting socket");
+									sendResgistrationEmail(fullName, email);
+			
+									
 									}
 								});
 						
@@ -66,10 +97,13 @@ exports.register = function(clients, user, socket , users){
 							}
 						
 						}
-			
-			
-			
+					
+						
+						
 					});
+					
+					
+					
 			
 			
 			
@@ -94,19 +128,26 @@ exports.register = function(clients, user, socket , users){
 
 function sendResgistrationEmail(Name, email){
 
-	console.log("in function sendMail");
-	smtpTransport.sendMail({  //email options
-	   from: "Shubham Purandare<shubham.purandare@gmail.com>", // sender address.  Must be the same as authenticated user if using Gmail.
-	   to: Name+"<"+email+">",  // receiver
-	   subject: " WELCOME ABOARD", // subject
-	   text: "We have sucessfully registered you! Enjoy all the features of the app. Thankyou. " // body
-	}, function(error, response){  //callback
-	   if(error){
-	       console.log(error);
-	   }else{
-	       console.log("Message sent: " + response.message);
-	   }
-	   
-	   smtpTransport.close(); // shut down the connection pool, no more messages.  Comment this line out to continue sending emails.
-	});
+	var transporter = nodemailer.createTransport( "SMTP", {
+  service: 'gmail',
+  auth: {
+    user: 'dreambig704@gmail.com',
+    pass: 'rulebreakers'
+  }
+});
+
+var mailOptions = {
+  from: 'dreambig704@gmail.com',
+  to: email,
+  subject: 'Welcome Aboard',
+  text: 'Welcome, now you can use all the features of the app.'
+};
+
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Email sent: ' + info.response);
+  }
+}); 
 }

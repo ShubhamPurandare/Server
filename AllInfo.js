@@ -63,7 +63,7 @@ console.log("In Allinfo listener...");
 				 value = finalArray[i].value;
 
 				console.log("Updating values  "+ component + ":"+value);
-				c.update({"_id":grNumber }, {$set: { [component] : value}});
+				c.update({"_id":grNumber }, {$set: { [component] : value}},function(err , result){if(err)throw err;});
 				if(i === length){
 					
 				}

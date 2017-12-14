@@ -2,7 +2,8 @@
 
 
 exports.facultySubjects = function(clients, facultySubjColl, socket, db , jsonobj){
-
+var SubjectsColl = db.collection("Subjects");
+	
 
 		
 
@@ -40,6 +41,7 @@ console.log("In facultySubjects method");
 							var obj1 = {}
 							obj1["Subject"] = temp.Subject;
 							obj1["Div"] = div;
+							obj1["SubjCode"] = temp.SubjectCode;
 							 
 					
 							switch(year){
@@ -60,6 +62,7 @@ console.log("In facultySubjects method");
 							finalObj["TE"] = TE;
 							finalObj["BE"] = BE;
 						
+							
 							console.log("Final object is"+JSON.stringify(finalObj));
 							socket.emit("FacultySubjResult" , finalObj);
 				
@@ -75,20 +78,89 @@ console.log("In facultySubjects method");
 				}else{
 					console.log("Not a valid document");
 				}
-		
+				lookForStudents(finalObj, SubjectsColl);
+							
 	
 			});
+			
+			
+			
 			clients--;
 			console.log("Client disconnected.... and clients are "+clients);
 			
 				
 		
+	
 		
 
 
 
 
 }
+
+function lookForStudents(finalObj , SubjectsColl){
+	
+		
+	var validStudents = [];
+		// fetch concerned students.
+		
+		var arr = new Array("SE" , "TE" , "BE");
+		
+		for(var i=0; i< arr.length ; i++){
+		
+			var token = arr[i];
+			var arrOfYear = finalObj[token];
+			var count = arrOfYear.length;
+			var j=0;
+			while(j<count){
+				
+				var obj = arrOfYear[j];
+				var subCode = obj['SubjCode'];
+				var div = obj['Div'];
+				console.log("Subject code is "+subCode + " And div is "+div);	
+				
+					SubjectsColl.aggregate([{$match:{ "_id" : subCode }  },{ $unwind: "$students"  },{ $lookup : { from: 							"basicUserDetails", localField: 							"students",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
+			
+			//console.log(result);
+			
+			for(var i=0; i<result.length; i++){
+		 	
+		 		var obj = result[i];
+		 		//console.log(obj);
+		 		 var matched = obj.matched;
+		 		//console.log(matched);
+		 		if(matched.length >0){
+		 			var obj1 = matched[0];
+		 			if(obj1.div == div){
+		 				console.log("yessssssssssssss");
+		 				validStudents.push(obj1._id);
+		 				console.log("Valid students are "+validStudents);
+			
+		 				
+		 			}
+		 		}
+		 		
+		 		 
+		 	}
+		 	console.log("Loop "+j+" ended..");
+			
+			obj['StudentsList'] = validStudents;
+			console.log("Valid students are "+validStudents);
+			j++;
+			
+			validStudents = [];
+			
+			
+			
+			});
+			
+		 
+			}
+		
+		}
+		
+	
+	}
 
 
 

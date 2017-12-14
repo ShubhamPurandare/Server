@@ -67,7 +67,7 @@ function sendData(socket ,clients , db ,  code, Grumber , div ){
 				console.log("Result is "+JSON.stringify(result));
 				var obj = result[0];
 				
-				c.update( {"_id" :code } , {$addToSet : { students : Grumber  } }  );
+				c.update( {"_id" :code } , {$addToSet : { students : Grumber  } } ,function(err , result){if(err)throw err;} );
 				console.log("Student with GR Number "+Grumber +" registered successfuly");
 						
 				

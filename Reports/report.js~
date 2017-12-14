@@ -1,0 +1,81 @@
+
+var mongo = require('mongodb').MongoClient;
+var fs = require('fs');
+var sizeof = require('object-sizeof');
+
+
+mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , db){
+
+	if(err){
+		throw err;
+		console.log("Error connecting to mlab ...");
+	}else{
+		
+
+		console.log("Connected to mlab ...");
+
+
+		var users = db.collection("Users");
+		users.find().toArray(function(err,data){
+			
+			if(err){
+					throw error;
+				}else{
+				//console.log(data);
+				
+				
+				
+				var key = Object.keys(data[5]);
+				//console.log(key);
+
+
+				var res='';
+
+				for(var j = 0; j < key.length; j++){
+
+				 res=res+key[j]+'\t'
+
+				}
+				res += '\n';
+				//console.log(res);
+				
+				
+
+				for (var i = 0; i < data.length; i++) {
+				
+					var d = data[i];
+				    	//console.log(d);
+					for(var j = 0; j < key.length; j++){
+
+						var k = key[j];
+						//console.log(d[k]);
+						res += d[k]+'\t';
+						
+					}
+					
+					res += '\n';
+					    
+				
+				 }
+				 
+				 console.log(res);
+				
+				fs.appendFile('data.xls', res, 'binary' ,function(error){
+					if(error){
+						console.log("Error");
+					
+					}
+				
+					console.log("Done");
+					mongo.disconnect();
+					
+				});
+
+
+					
+				
+			}
+		});
+
+}
+});

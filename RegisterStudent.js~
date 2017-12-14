@@ -51,7 +51,7 @@ function sendData(socket ,clients , db ,  code, Grumber , div ){
 					console.log("NO data found");
 					console.log("We are registering the first student for this subject :"+code + " for div  "+div);
 					
-					c.insert({ _id: code , [div]: [ Grumber] })
+					c.insert({ _id: code , students: [ Grumber] })
 					console.log("Inserted successfully!");
 					
 					
@@ -67,7 +67,7 @@ function sendData(socket ,clients , db ,  code, Grumber , div ){
 				console.log("Result is "+JSON.stringify(result));
 				var obj = result[0];
 				
-				c.update( {"_id" :code } , {$addToSet : { [div] : Grumber  } }  );
+				c.update( {"_id" :code } , {$addToSet : { students : Grumber  } }  );
 				console.log("Student with GR Number "+Grumber +" registered successfuly");
 						
 				
