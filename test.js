@@ -17,9 +17,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	var facultySubjColl = db.collection("FacultyAllocation");
 
 	
-console.log("In facultySubjects method");
+			console.log("In facultySubjects method");
 			
-			var eid = "E104";
+			var eid = "E102";
 			var branch = "Computer";
 			var sem = "Sem2";
 			console.log("EID "+eid + " branch "+branch + " Sem "+sem);

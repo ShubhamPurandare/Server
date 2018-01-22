@@ -16,6 +16,16 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 
 		var users = db.collection("Users");
+		
+doc=users.findOne();
+
+
+console.log(doc);
+fs.appendFileSync('data3.txt', JSON.stringify(doc), 'binary' );
+
+for (key in doc) {}
+
+
 		users.find().toArray(function(err,data){
 			
 			if(err){
@@ -59,18 +69,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 				 }
 				 
 				 console.log(res);
+				 console.log("Size of json object is  "+sizeof(data));
 				
-				fs.appendFile('data.xls', res, 'binary' ,function(error){
-					if(error){
-						console.log("Error");
-					
-					}
 				
-					console.log("Done");
-					mongo.disconnect();
-					
-				});
-
 
 					
 				

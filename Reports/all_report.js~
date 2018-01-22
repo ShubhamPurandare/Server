@@ -12,165 +12,35 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	}else{
 		
 
-		console.log("Connected to mlab ...");
-
-		var users = db.collection("Users");
-		var personalDetails = db.collection("personalDetails");
-		var academicDetails = db.collection("academicDetails");
-		var basicDetails = db.collection("basicUserDetails");
-		var residentialInfo = db.collection("residentialInfo");
-		var parentInfo = db.collection("parentInfo");
-		var personaldata, academicdata, userdata , basicdata , resdata , parentData, count=0 ;
-		var finalData;
-		var arr;
-		
-		
-		users.find().toArray(function(err,data){
+	var c = db.collection("Load_Time_Table"); // takes the collection name and creates a collection variable
+	var key = "Computer";
+	
+	c.find().toArray( function(error , result){
 			
-			if(err){
-					throw error;
-				}else{
-				
-				console.log("In users find method ");
-				
-				userdata = data;
-				
-				incrCount();
+		if(error) throw error;
+		
+		var c=0;
+		var arr = [];
+		while(c != result.length){
+			
+			var item = result[c];
+			var id = item._id;
+			if(id.indexOf(key) >= 0){
+				console.log("valid Document");
+				arr.push(item);
+			
+			} 
+		
+			c++;
+			if(c == result.length){
+				console.log(JSON.stringify(arr));
+				//socket.emit("MatchingResult" , arr);
 			}
-		});
-		
-		
-		 personalDetails.find().toArray(function(err,data){
-			
-			if(err){
-					throw error;
-				}else{
-				console.log("In personal find method ");
-				
-				
-				personaldata = data;
-				incrCount();
-			}
-		});
-		
-		
-		
-		
-		academicDetails.find().toArray(function(err,data){
-			
-			if(err){
-					throw error;
-				}else{
-				console.log("In aca find method ");
-				
-				academicdata = data;
-				incrCount();
-				
-			}
-		});
-		
-		
-
-		basicDetails.find().toArray(function(err,data){
-			
-			if(err){
-					throw error;
-				}else{
-				console.log("In basic find method ");
-				
-				
-				basicdata = data;
-				incrCount();
-				
-			}
-		});
-		
-		
-		
-		residentialInfo.find().toArray(function(err,data){
-			
-			if(err){
-					throw error;
-				}else{
-				console.log("In res find method ");
-				
-				resdata = data;
-				incrCount();
-				
-			}
-		});
-		
-		parentInfo.find().toArray(function(err,data){
-			
-			if(err){
-					throw error;
-				}else{
-				console.log("In parennt find method ");
-				
-				
-				parentData = data;
-				incrCount();
-				
-			}
-		});
-		
-		var incrCount = function( ){
-		
-			if(++count == 6){
-			
-				console.log("sagala zala maza ");
-				arr = [personaldata, academicdata, userdata , basicdata , resdata , parentData];
-				
-				prenext();
-				
-			}
-		
-		}
-		
-		var prenext = function()
-		{
-				for (var i =0; i< arr.length ; i++){
-				
-				var c = arr[i];
-				var k = c[0];
-				var k1 = Object.keys(k);
-				console.log(k1);
-					for(var j = 0; j < k1.length; j++){
-
-					 finalData+=k1[j]+'\t';
-
-					}	
-			
-				}
-				
-				
-				 finalData+='\n';
-				 fs.appendFile('data1.xls', finalData, 'binary' ,function(error){
-					if(error){
-						console.log("Error");
-					
-					}
-				
-					console.log("Done");
-					next();
-					
-				});
-
-				
-				
-		}
-		
-		
-		var next = function(){
-		
-			
-		
-		}
-		
-		
+		}	
 		
 		
 			
 		
+});
 }
 });

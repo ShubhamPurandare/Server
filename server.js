@@ -13,8 +13,21 @@ var registerModule = require("./Register");
 var getAllDataModule = require("./GetAllData");
 var registerStudentModule = require("./RegisterStudent");
 var allInfoModule = require("./AllInfo");
+var getMatch = require("./getData");
+var searchRes = require("./search");
+var loadMap = require("./LoadFacultyHashMap");
+var searchUser = require("./searchUser");
+var sendKeys = require("./sendKeys");
+var profileStats = require("./ProfileStats");
+var addNotics = require("./AddNotice");
+var fs = require('fs');
 var updates = {};
+var notices = [];
 
+var print = function(object)
+{
+	console.log(JSON.stringify(object));
+}
 
 mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , db){
 
@@ -40,7 +53,8 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var facultySubjColl = db.collection("FacultyAllocation");
 		var TTFacultyColl = db.collection("Load_Time_Table");
 		var SubjectsColl = db.collection("Subjects");
-		
+		var noticeUpdate = db.collection("MyUpdates");
+		var postsCall = db.collection("Posts");
 		
 		var allFieldsString = ["personalDetails" , "academicDetails","basicDetails", "residentialInfo", "parentInfo"]
 		var allFields = [personalDetails, academicDetails, basicDetails, residentialInfo, parentInfo];
@@ -59,6 +73,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		console.log("Client "+clients+ " Connected.....");
 		
 		
+		
 		client.on('disconnect' , function(socket){
 			clients--;
 			console.log("Client disconnected.... number of clients is "+ clients);
@@ -67,6 +82,84 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 //------------------------------ Subject Reschedule -------------------------------------------------------------------------------
 
+	
+
+//------------------------------Posts to Server--------------------------
+	
+	
+	socket.on('Image' ,function (jsonObj){
+		var data = jsonObj.pic;
+		
+		var base64Data = data.replace(/^data:image\/jpg;base64,/, "");
+		console.log(JSON.stringify(base64Data));
+		fs.writeFile("out.jpg", base64Data, 'base64', function(err) {
+		  console.log(err);
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/*console.log(JSON.stringify(data));
+		  //Data = [1,6,2,23,255,etc]
+		  var wstream = fs.createWriteStream("./file.jpg");
+		   for (var i = 0; i < data.length; i++) {
+		       wstream.write(data[i].toString('base64'));
+		   }
+		   wstream.end();
+		   console.log("File created");
+		   fs.open("./file.jpg" , function(err , res){
+		   
+		   	if(err)throw err;
+		   	console.log("Opened");
+		   });*/
+		
+	} );
+	
+	
+	socket.on('PostNotice' , function (jsonObj){
+	
+		addNotics.store(db , socket , jsonObj);
+	});
+	
+//-----------------------------Posts to Server ends-----------------------
+	socket.on('Stats' , function (jsonObj){
+	
+		profileStats.stats(db , socket , jsonObj);
+	});
+
+
+	socket.on('getKeys' , function(collname){  // get keys of a collection
+	
+		sendKeys.sendkeys(socket ,clients , db , collname);
+	});
+
+	socket.on('search', function(s){
+	
+		searchUser.searchUser(db ,  socket , s);
+	});
+
+	socket.on('FetchFacultyMap', function(){
+	
+		loadMap.load(db ,  socket);
+	});
+
+	socket.on('SearchUser' , function(key){
+		searchRes.searchFun( key, socket , db);
+	
+	});
+
+
+	socket.on('findMatch' , function(JsonData){
+		getMatch.getData(clients , JsonData , db , socket);
+	});
 
 	socket.on('ValidateTTRescheduling' , function(jsonobj){
 	
@@ -102,6 +195,32 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	
 	});
 	
+	var getPosts = function(socket , id,len){
+		
+		postsCall.find({"_id":id}).toArray(function(err,res){
+			if(err)
+			{
+				throw(err);
+			}
+			else
+			{
+				notices.push(res[0]);
+				if(notices.length==len)
+				{
+					console.log("Done");
+					print(notices);
+					socket.emit("PostsResults",notices);
+					console.log("Sent");
+					notices = [];
+				}
+			}
+		});
+	}	
+	
+	var clear = function(id){
+		var temp = [];
+		noticeUpdate.update({"_id":id},{$set:{updates:temp}});	
+	}
 	
 	socket.on('LookForUpdates' , function(jsonobj){
 	
@@ -113,6 +232,28 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var codeStr = [code];	
 	
 		var objToSend = updates[codeStr];
+	
+		noticeUpdate.find({"_id":code}).toArray(function(error,res){
+			if(error)
+			{
+				throw(error);
+			}
+			else
+			{
+				var obj = res[0];
+				print(obj);
+				var arrayOfUpdates = obj.updates;
+				var i=0;
+				while(i<arrayOfUpdates.length)
+				{
+					console.log("Elements are "+arrayOfUpdates[i]);
+					getPosts(socket , arrayOfUpdates[i],arrayOfUpdates.length);
+					i++;
+				}
+				clear(code);	
+			}
+		});
+		
 	
 		if(objToSend != null){
 		

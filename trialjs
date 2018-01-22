@@ -1,0 +1,29 @@
+
+var mongo = require('mongodb').MongoClient;
+
+
+		
+
+mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , db){
+
+	if(err){
+		throw err;
+		console.log("Error connecting to mlab ...");
+	}else{
+			console.log("Connected to mlab ...");
+
+
+		
+
+}
+});
+
+
+
+
+
+
+
+[{"$match":{"branch":"Computer"}},{"$match":{"year":"TE"}},{"$match":{"div":"C"}},{"$lookup":{"from":"personalDetails","localField":"_id","foreignField":"_id","as":"personalDetails"}},{"$lookup":{"from":"residentialInfo","localField":"_id","foreignField":"_id","as":"residentialInfo"}},{"$lookup":{"from":"basicUserDetails","localField":"_id","foreignField":"_id","as":"basicUserDetails"}},{"$lookup":{"from":"academicDetails","localField":"_id","foreignField":"_id","as":"academicDetails"}},{"$lookup":{"from":"parentInfo","localField":"_id","foreignField":"_id","as":"parentInfo"}}]
+
+

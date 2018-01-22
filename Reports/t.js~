@@ -1,4 +1,60 @@
-var a=[{"name" : "Shubham"}  ],b= [{"a":"b"} ];
-var arr = [a , b];
-var c = arr[0]
-console.log(c);
+var mongo = require('mongodb').MongoClient;
+
+
+
+mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , db){
+
+	if(err){
+		throw err;
+		console.log("Error connecting to mlab ...");
+	}else{
+	
+	
+		
+//var regexValue="E104";
+
+		var users = db.collection("Users");
+		var query = {_id : /^E/}
+		
+		users.find(query).toArray(function(err , result){
+	
+			if(err)throw err;
+			console.log("resukts are "+JSON.stringify(result));
+			//socket.emit('fetchedResults' , result);
+			var count = 0;
+			var res = {};
+			var arr= [];
+			while(count != result.length){
+			
+			
+				var obj = result[count];
+			
+				
+					var name = obj.firstName +" "+ obj.lastName;
+					var o = {};
+					o['name'] = name;
+					o['eid'] = obj._id;
+					arr.push(o);
+					
+				
+				count++;
+			}
+			
+			res['FacultyMap'] = arr;
+			
+			console.log("Results are "+JSON.stringify(res));
+	
+			
+	
+	
+		});
+	
+	
+
+}// else
+	
+	
+	
+}); // mongod connect
+
+

@@ -1,20 +1,12 @@
-var mongo = require('mongodb').MongoClient;
 
 
+exports.load= function(db ,  socket){
 
-mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , db){
 
-	if(err){
-		throw err;
-		console.log("Error connecting to mlab ...");
-	}else{
-	
-	
+	var users  = db.collection("Users");
 		
-//var regexValue="E104";
-
-		var users = db.collection("Users");
-		var query = {_id : /^E/}
+		
+	var query = {_id : /^E/}
 		
 		users.find(query).toArray(function(err , result){
 	
@@ -43,6 +35,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			res['FacultyMap'] = arr;
 			
 			console.log("Results are "+JSON.stringify(res));
+			socket.emit('fetchedResults' , res);
 	
 			
 	
@@ -50,11 +43,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		});
 	
 	
-
-}// else
 	
 	
-	
-}); // mongod connect
-
+}
 

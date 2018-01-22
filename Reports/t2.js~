@@ -24,7 +24,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var basicObjKeys ;
 		var arr=[];
 		
-		var c = db.collection("basicUserDetails"); // replace later
+		var c = db.collection("personalDetails"); // replace later
 						
 		c.find().toArray(function(err,data){ // remove latency
 						if(err)throw err;
@@ -37,21 +37,55 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						
 		});
 		
-		users.find().toArray(function(error , res){
 		
-			if(error)throw error;
-			
-			var count =0;
-			while(count != res.length){
-			
-				console.log("Loop "+count);
-				var obj = res[count];
-				
-				var id = obj._id;
-				 users.aggregate([{$match:{ "_id" : id }  },{ $lookup : { from: "basicUserDetails", localField: 							"_id",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
+		
+		
+		 users.aggregate([{ $lookup : { from: "personalDetails", localField: 							"_id",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
 			
 					console.log(result);
-					var temp = result[0];
+					
+					
+					var count =0;
+					while(count != result.length){
+					
+					var temp = result[count];
+					var matchedObj = temp.matched;
+					delete temp.matched;
+					var finalMatch = matchedObj[0];
+					var r1 = {};
+					var t2 = {};
+					for(var key in temp) r1[key] = temp[key];
+					if(finalMatch == null){
+						console.log("NULLL VALUE DETECTED");
+					for(var i in basicObjKeys){
+							console.log(basicObjKeys[i]);
+							var j = basicObjKeys[i];
+							if(j != "_id" )
+							t2[j] = "";
+					}
+						
+					}else{
+						console.log("NOT NULL");
+					
+						for(var key in finalMatch) r1[key] = finalMatch[key];
+						
+						console.log("Newly created object is "+JSON.stringify(t2));
+						for(var key in t2) r1[key] = t2[key];
+						
+					}
+					
+						arr.push(r1);
+						fs.writeFileSync('data2.xls', j2xls(arr), 'binary');
+			
+						
+					
+						count++;
+					
+					
+					}
+					
+					
+				/*	var temp = result[0];
 					var matchedObj = temp.matched;
 					delete temp.matched;
 					var finalMatch = matchedObj[0];
@@ -89,14 +123,25 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						
 						
 						
-						/*for(var key in finalMatch) r1[key] = finalMatch[key];
-							//temp = temp.merge(finalMatch);
-					
-							fs.appendFileSync('data2.txt', JSON.stringify(r1), 'binary');*/
-			
-					
+						
+				*/	
 					
 				});
+		
+		
+		/*
+		users.find().toArray(function(error , res){
+		
+			if(error)throw error;
+			
+			var count =0;
+			while(count != res.length){
+			
+				console.log("Loop "+count);
+				var obj = res[count];
+				
+				var id = obj._id;
+				
 			
 				
 				
@@ -109,7 +154,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			console.log("Writing data here");
 		
 		});
-		
+		*/
 		
 		
 			

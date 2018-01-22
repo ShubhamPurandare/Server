@@ -1,4 +1,5 @@
 
+const assert = require("assert");
 exports.allInfo = function(clients, data , db , socket ){
 
 var roomCol = db.collection("Rooms");
@@ -74,41 +75,37 @@ console.log("In Allinfo listener...");
 					socket.disconnect();
 					clients--;
 					console.log("Client disconnected.... and clients are "+clients);
-					
-/*function validateDBOperation(object , collection , priKey){
-
-	collection.find({ "_id" :priKey  }).toArray( function(error , result){
-	
-		console.log("Object for primary key "+priKey +" is "+result);
-		var obj = result[0];
-		console.log("obj is "+obj);
-		if(object == obj){
-			console.log("Objects are equal");
-		}else{
-		
-			console.log("Objects are not equal");
-		
-			}
-		
-	
-		});
-	}*/
+					info['_id'] = grNumber;
+					//validateDBOperation(info , c , grNumber)
 			
 					
 	
 		});
 		
-		if(collectionName == "Load_Time_Table"){
-			console.log("Calling function loadUsedRooms");
-			//loadUsedRooms(object , grNumber) ;	
-		}
-		
-		//validateDBOperation(info ,grNumber , c);
 					
 		
 
 
 }
 
+					
+function validateDBOperation(object , collection , priKey){
 
+	collection.find({ "_id" :priKey  }).toArray( function(error , result){
+		var obj = result[0];
+		
+		console.log("Object for primary key "+priKey +" is "+JSON.stringify(obj));
+		console.log("Actual obj is "+JSON.stringify(object));
+		
+		try{
+		 assert.deepEqual(obj , object , "Data is loaded without any error") ;
+		 }catch( e){
+		 
+		 console.log("Data is not loaded properly, calling the all info function again");
+		 
+		 
+		 }
+	
+		});
+}
 

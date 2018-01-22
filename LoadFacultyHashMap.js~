@@ -1,0 +1,27 @@
+
+
+exports.load= function(db ,  socket){
+
+
+	var users  = db.collection("Users");
+		
+		
+	users.find(
+	{
+	
+		_id : { $regex: 'E*'}
+	}
+	
+	).toArray(function(result){
+	
+	console.log("Results are "+result);
+	
+	socket.emit('fetchedResults' , result);
+	
+	
+	
+	});
+	
+	
+}
+
