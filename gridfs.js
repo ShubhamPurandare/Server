@@ -1,6 +1,6 @@
 'use strict';
 // dependencies
-var mongo = require('mongodb');
+let mongo = require('mongodb');
 var Grid = require('gridfs');
 		
 

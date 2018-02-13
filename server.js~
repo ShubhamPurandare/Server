@@ -1,4 +1,4 @@
-'use strict';
+
 // dependencies
 var port     = process.env.PORT || 8083;
 var mongo = require('mongodb').MongoClient;
@@ -12,7 +12,7 @@ var loginModule = require("./Login");
 var registerModule = require("./Register");
 var getAllDataModule = require("./GetAllData");
 var registerStudentModule = require("./RegisterStudent");
-var allInfoModule = require("./AllInfo");
+//var allInfoModule = require("./AllInfo");
 var getMatch = require("./getData");
 var searchRes = require("./search");
 var loadMap = require("./LoadFacultyHashMap");
@@ -90,9 +90,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	socket.on('Image' ,function (jsonObj){
 		var data = jsonObj.pic;
 		
-		var base64Data = data.replace(/^data:image\/png;base64,/, "");
+		var base64Data = data.replace(/^data:pdf\/xls;base64,/, "");
 		console.log(JSON.stringify(base64Data));
-		fs.writeFile("out.png", base64Data, 'base64', function(err) {
+		fs.writeFile("PDFout.pdf", base64Data, 'base64', function(err) {
 		  console.log(err);
 		});
 		
@@ -107,19 +107,6 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		
 		
 		
-		/*console.log(JSON.stringify(data));
-		  //Data = [1,6,2,23,255,etc]
-		  var wstream = fs.createWriteStream("./file.jpg");
-		   for (var i = 0; i < data.length; i++) {
-		       wstream.write(data[i].toString('base64'));
-		   }
-		   wstream.end();
-		   console.log("File created");
-		   fs.open("./file.jpg" , function(err , res){
-		   
-		   	if(err)throw err;
-		   	console.log("Opened");
-		   });*/
 		
 	} );
 	
@@ -405,7 +392,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 	socket.on('Allinfo' , function(data){
 		
-		allInfoModule.allInfo(clients, data , db , socket );
+	//	allInfoModule.allInfo(clients, data , db , socket );
 		//validateDBOperation();
 
 

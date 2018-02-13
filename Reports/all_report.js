@@ -7,6 +7,7 @@ var sizeof = require('object-sizeof');
 mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , db){
 
 	if(err){
+		
 		throw err;
 		console.log("Error connecting to mlab ...");
 	}else{

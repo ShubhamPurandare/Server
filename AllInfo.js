@@ -1,14 +1,29 @@
 
 const assert = require("assert");
-exports.allInfo = function(clients, data , db , socket ){
+exports.allInfo = function(clients,fs ,  data , db , socket ){
 
 var roomCol = db.collection("Rooms");
 
 
+var storeAttachment = function(type , encodedData , filename){
+		if (type == "jpg") {
+			var data = "image"
+		}else{
+			data = type;
+		}
+		
+		var base64Data = encodedData.replace(/^data:data\/type;base64,/, "");
+		console.log(JSON.stringify(base64Data));
+		fs.writeFile(filename+"."+type, base64Data, 'base64', function(err) {
+		  console.log(err);
+		});
+
+	}
+
 console.log("In Allinfo listener...");
 		var object = JSON.parse(data);
 		var info = object.obj;
-		console.log("Object is "+data)
+		//console.log("Object is "+data)
 		var contents = object.contents;
 		var length = object.Length;
 		var grNumber = object.grNumber;
@@ -17,70 +32,74 @@ console.log("In Allinfo listener...");
 		var c = db.collection(collectionName); // takes the collection name and creates a collection variable
 
 		
-		console.log("data extracted is "+ object + " "+ contents + " "+length + " "+grNumber + " "+collectionName);
+	//	console.log("data extracted is "+ object + " "+ contents + " "+length + " "+grNumber + " "+collectionName);
 		var infoObj = JSON.parse(info);		
 		console.log(infoObj);  // correctly parsed		
 		var finalArray = new Array();
-		console.log(typeof contents);
+		//console.log(typeof contents);
 		var field = contents.split(','); // recieved details are in csv form
-					
 		
-		for(var i=0; i<length ; i++)
-		{
-		
+		if (infoObj.Display_picture != null) {
 
-					
-			var component = field[i];
-			var value = infoObj[component];
+			var encodedImage = infoObj.Display_picture;
+			// its a request for setting dp
+			var filename = grNumber+"dp";
+			storeAttachment("jpg" , encodedImage , filename);
+			infoObj['Display_picture'] = filename;
+			console.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
 			
-			// save the data in an array 
-			finalArray[i] = {};
-			finalArray[i].label = component;
-			finalArray[i].value = value;
-			console.log(finalArray[i].label+ " : "+ finalArray[i].value);		
+
+		}
+		if (infoObj.Cover_picture != null) {
+
+			var encodedImage = infoObj.Cover_picture;
+			// its a request for setting dp
+			var filename = grNumber+"cover_dp";
+			storeAttachment("jpg" , encodedImage , filename);
+			infoObj['Cover_picture'] = filename;
+			console.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
+			
+
 		}
 
 		
-		
+
+
+
+
 		c.find({ "_id" :grNumber  }).toArray( function(error , result){
 
-			console.log("The first element in the aray is :"+ result);
+			console.log("The first element in the aray is :"+ JSON.stringify(result));
 
-			if(error) 
+			if(error){
 				throw error;
-
+				socket.emit('Allinfo' , 0);
+			} 
+				
 			if(result.length == 0){ // insert
 				console.log("Earlier data entry not found ...");
 				console.log("Inserting data...");
 				c.insert({_id :grNumber });				
 			}
-			console.log("Updating data...");
-				
-			console.log("length is "+length);
-			for(var i=0 ; i<length ; i++ ){
 
-				console.log("loop"+i);
-				  component = finalArray[i].label;
-				 value = finalArray[i].value;
-
-				console.log("Updating values  "+ component + ":"+value);
-				c.update({"_id":grNumber }, {$set: { [component] : value}},function(err , result){if(err)throw err;});
-				if(i === length){
-					
-				}
-
-			}
-					console.log("Emmitting socket now .....");
+				c.update({"_id":grNumber} , {$set:  infoObj }  );
+				console.log("Data updated");
+				console.log("Emmitting socket now .....");
 					socket.emit('Allinfo' , 1);
 					socket.disconnect();
 					clients--;
 					console.log("Client disconnected.... and clients are "+clients);
+					// now validate the current database operation.
 					info['_id'] = grNumber;
 					//validateDBOperation(info , c , grNumber)
 			
-					
-	
+
+
 		});
+
+
+
+
 		
 					
 		
@@ -89,7 +108,7 @@ console.log("In Allinfo listener...");
 }
 
 					
-function validateDBOperation(object , collection , priKey){
+/*function validateDBOperation(object , collection , priKey){
 
 	collection.find({ "_id" :priKey  }).toArray( function(error , result){
 		var obj = result[0];
@@ -107,5 +126,5 @@ function validateDBOperation(object , collection , priKey){
 		 }
 	
 		});
-}
+}*/
 

@@ -1,4 +1,4 @@
-'use strict';
+
 // dependencies
 var port     = process.env.PORT || 8083;
 var mongo = require('mongodb').MongoClient;
@@ -19,7 +19,12 @@ var loadMap = require("./LoadFacultyHashMap");
 var searchUser = require("./searchUser");
 var sendKeys = require("./sendKeys");
 var profileStats = require("./ProfileStats");
-var addNotics = require("./AddNotice");
+var addNotice = require("./AddNotice");
+var sendNotice = require("./sendNotice");
+var createPage = require("./createPage");
+var getFile = require("./getFile");
+var updateTT = require("./updateTT");
+var getAttachments = require("./getAttachments");
 var fs = require('fs');
 var updates = {};
 var notices = [];
@@ -80,53 +85,24 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		});
 		
 
-//------------------------------ Subject Reschedule -------------------------------------------------------------------------------
+	socket.on('Hey' , function(json){
 
-	
+		console.log(json);
+	});
 
-//------------------------------Posts to Server--------------------------
+	socket.on('UpdateTT' , function (jsonObj){
 	
+		updateTT.update(db , socket , jsonObj , TimeTable );
+	});
 	
-	socket.on('Image' ,function (jsonObj){
-		var data = jsonObj.pic;
-		
-		var base64Data = data.replace(/^data:image\/jpg;base64,/, "");
-		console.log(JSON.stringify(base64Data));
-		fs.writeFile("out.jpg", base64Data, 'base64', function(err) {
-		  console.log(err);
-		});
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		/*console.log(JSON.stringify(data));
-		  //Data = [1,6,2,23,255,etc]
-		  var wstream = fs.createWriteStream("./file.jpg");
-		   for (var i = 0; i < data.length; i++) {
-		       wstream.write(data[i].toString('base64'));
-		   }
-		   wstream.end();
-		   console.log("File created");
-		   fs.open("./file.jpg" , function(err , res){
-		   
-		   	if(err)throw err;
-		   	console.log("Opened");
-		   });*/
-		
-	} );
-	
+	socket.on('FetchAttachments' , function(jsonObj){
+
+		getAttachments.getAttachments(jsonObj , fs , socket);
+	});
 	
 	socket.on('PostNotice' , function (jsonObj){
 	
-		addNotics.store(db , socket , jsonObj);
+		addNotice.store(db , socket , jsonObj , fs);
 	});
 	
 //-----------------------------Posts to Server ends-----------------------
@@ -195,32 +171,6 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	
 	});
 	
-	var getPosts = function(socket , id,len){
-		
-		postsCall.find({"_id":id}).toArray(function(err,res){
-			if(err)
-			{
-				throw(err);
-			}
-			else
-			{
-				notices.push(res[0]);
-				if(notices.length==len)
-				{
-					console.log("Done");
-					print(notices);
-					socket.emit("PostsResults",notices);
-					console.log("Sent");
-					notices = [];
-				}
-			}
-		});
-	}	
-	
-	var clear = function(id){
-		var temp = [];
-		noticeUpdate.update({"_id":id},{$set:{updates:temp}});	
-	}
 	
 	socket.on('LookForUpdates' , function(jsonobj){
 	
@@ -232,28 +182,27 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var codeStr = [code];	
 	
 		var objToSend = updates[codeStr];
-	
-		noticeUpdate.find({"_id":code}).toArray(function(error,res){
-			if(error)
-			{
-				throw(error);
-			}
-			else
-			{
-				var obj = res[0];
-				print(obj);
-				var arrayOfUpdates = obj.updates;
-				var i=0;
-				while(i<arrayOfUpdates.length)
-				{
-					console.log("Elements are "+arrayOfUpdates[i]);
-					getPosts(socket , arrayOfUpdates[i],arrayOfUpdates.length);
-					i++;
+
+		if (code == "Admin") {
+			// fetch admin updates 1. see if any new page is added
+			var pagesColl = db.collection("Pages");
+			pagesColl.find({"isApproved": 0}).toArray(function(err , res){
+
+				if (err) {throw err;}
+
+				if (res.length == 0) {
+					// no newly added pages.
+				}else{
+					socket.emit('Adminupdates' , res);
+					console.log("data emmitted"+JSON.stringify(res));
 				}
-				clear(code);	
-			}
-		});
+
+			}); 
+
+		}
+	
 		
+		sendNotice.send(code , socket , noticeUpdate , fs ,postsCall );
 	
 		if(objToSend != null){
 		
@@ -300,7 +249,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			// request is accepted use the lookup query
 			
 			console.log("Request is accepted");
-			SubjectsColl.aggregate([{$match:{ "_id" : subjCode }  },{ $unwind: "$students"  },{ $lookup : { from: "basicUserDetails", localField: 							"students",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
+			SubjectsColl.aggregate([{$match:{ "_id" : subjCode }  },{ $unwind: "$students"  },{ $lookup : { from: 			"basicUserDetails", localField:"students",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
 			
 			console.log(result);
 			
@@ -405,7 +354,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 	socket.on('Allinfo' , function(data){
 		
-		allInfoModule.allInfo(clients, data , db , socket );
+		allInfoModule.allInfo(clients,fs, data , db , socket );
 		//validateDBOperation();
 
 
@@ -421,12 +370,23 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		
 		});
 
+		socket.on('CreatePage' , function(jsonObj){
+
+			createPage.create(jsonObj , socket , db, fs );
+		});
+
+		socket.on('getFile' ,function(jsonObj){
+
+			getFile.get(jsonObj , socket , db, fs );
+		});
+
+
 //-------------------------------------Send data (Generic func to send all data ) ------------------------------------------------------------------------
 
 
 		socket.on('getAllData', function(JsonData){
 			
-			getAllDataModule.getAllData(clients , JsonData , db , socket);
+			getAllDataModule.getAllData(clients ,fs, JsonData , db , socket);
 	
 		});
 

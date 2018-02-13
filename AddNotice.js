@@ -1,12 +1,15 @@
-exports.store = function(db , socket , jsonObj)
+
+
+exports.store = function(db , socket , jsonObj , fs)
 {
 var coll = db.collection("Posts");
 var coll2 = db.collection("MyUpdates");	
 	
-	
-	var insertPost = function(noticeFor){
+// 3)	
+	var insertPost = function(noticeFor){  // uploads the post in posts collection
 	coll.insert( {  title : title , desc : desc , sender_id : sender_id,  sender_name : sender_name ,
-						 		validUsers : noticeFor } , function(error,obj){
+						 		validUsers : noticeFor  , isImageAttached : isImageAttached , isPDFAttached : isPDFAttached
+						 		, isPPTAttached : isPPTAttached  , isDocAttached : isDocAttached} , function(error,obj){
 								if(error){
 									console.log("Error");
 									socket.emit("NoticePosted","0");
@@ -14,7 +17,8 @@ var coll2 = db.collection("MyUpdates");
 									console.log(JSON.stringify(obj.ops));
 									var ops = obj.ops[0];
 									console.log(JSON.stringify(ops._id));
-									var temp = ops._id;			
+									var temp = ops._id;		
+									insertAttachments(temp);	
 									insertUpdates(temp,noticeFor);
 									socket.emit("NoticePosted","1");
 								}
@@ -23,9 +27,39 @@ var coll2 = db.collection("MyUpdates");
 	}
 	
 	
-	
-	
-	var postInsert = function(id,receiver_id)
+
+	var insertAttachments = function(post_id){  // parse the attchments array and load each attachmant in the post
+
+			var i = 0;
+			var main = {};
+			
+			while(i < attachments.length){
+
+
+				var obj = attachments[i];
+
+				console.log(JSON.stringify(obj));
+				var a = Object.keys(obj);
+
+				console.log(a[0]);
+				var k = a[0];
+				
+				main[k] = obj[k];
+				//coll.update({_id : post_id} , {$set : { k1:obj[k1]  } } );
+				i++;
+			}
+			coll.update({_id : post_id} , {$set:  main }  );
+
+
+
+			
+
+
+	}
+
+
+	// 5)
+	var postInsert = function(id,receiver_id) // posts the updates for each valid user
 	{
 		coll2.find({"_id":receiver_id}).toArray(function(err,res){
 				if(err)
@@ -57,6 +91,8 @@ var coll2 = db.collection("MyUpdates");
 			});
 	}
 	
+
+	// 4)
 	var insertUpdates = function(id,array)
 	{
 	
@@ -70,8 +106,23 @@ var coll2 = db.collection("MyUpdates");
 		}
 		
 	}
+
+	var storeAttachment = function(type , encodedData , filename){
+		if (type == "jpg") {
+			var data = "image"
+		}else{
+			data = type;
+		}
+		
+		var base64Data = encodedData.replace(/^data:data\/type;base64,/, "");
+		console.log(JSON.stringify(base64Data));
+		fs.writeFile(filename+"."+type, base64Data, 'base64', function(err) {
+		  console.log(err);
+		});
+
+	}
 	
-	
+	// 1)
 	var coll1 = db.collection("basicUserDetails");
 	var sender_id = jsonObj.ID;
 	var sender_name = jsonObj.Name;
@@ -79,7 +130,57 @@ var coll2 = db.collection("MyUpdates");
 	var desc = jsonObj.Desc;
 	var pref = jsonObj.Pref;
 	var noticeFor = [];
-	
+	var isImageAttached = jsonObj.isImageAttached;
+	var isPDFAttached = jsonObj.isPDFAttached;
+	var isPPTAttached = jsonObj.isPPTAttahced;
+	var isDocAttached = jsonObj.isDocAttached;
+	var attachments = [];
+	if (isImageAttached == 1) {
+		var encodedImage = jsonObj.Image;
+		var date = new Date();
+		//var imgType = jsonObj.ImageType;
+		var f = sender_id+"image"+date;
+		var fn_image = sender_id+"image"+date+".jpg";
+		var obj = {};
+		obj['Image'] = fn_image;
+		attachments.push(obj);
+		storeAttachment("jpg" , encodedImage , f);
+	}
+	if (isPPTAttached == 1) {
+		var encodedPPT = jsonObj.PPT;
+		var date = new Date();
+		var filename = sender_id+"ppt"+date;
+		var fn = sender_id+"ppt"+date+".ppt";
+		var obj = {};
+		obj['PPT'] = fn;
+		attachments.push(obj);
+		
+		storeAttachment("ppt" , encodedPPT, filename );
+	}
+	if (isPDFAttached == 1) {
+		var encodedPDF = jsonObj.PDF;
+		var date = new Date();
+		var filename = sender_id+"pdf"+date;
+		var fn = sender_id+"pdf"+date+".pdf";
+		var obj = {};
+		obj['PDF'] = fn;
+		attachments.push(obj);
+		storeAttachment("pdf" , encodedPDF, filename);
+	}
+	if (isDocAttached == 1) {
+		var encodedDoc = jsonObj.DOC;
+		var date = new Date();
+		var filename = sender_id+"doc"+date;
+		var fn = sender_id+"doc"+date+".docx";
+		var obj = {};
+		obj['DOC'] = fn;
+		attachments.push(obj);
+		storeAttachment("doc" , encodedDoc, filename);
+	}
+
+
+
+	// 2)
 	console.log(JSON.stringify(jsonObj));
 	if(pref.All==1)
 	{	

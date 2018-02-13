@@ -33,10 +33,12 @@ console.log("In facultySubjects method");
 				
 							console.log("Match found ");
 							console.log(temp);
-							var div = id.substr(-1);
-							var one = id.substr(-7 );
-							var year = one.substr(0, 2);
-					
+							var CurrYear = id.substr(-4);
+							var main = id.substr(-5);
+							var div = main.substr(0 , 1);
+							var one = id.substr(-11);
+							var year = one.substr(0,2);
+												
 						//	console.log("Subject is "+temp.Subject);
 							var obj1 = {}
 							obj1["Subject"] = temp.Subject;

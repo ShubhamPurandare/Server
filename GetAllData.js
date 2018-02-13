@@ -1,6 +1,12 @@
 
-exports.getAllData = function(clients , JsonData , db , socket){
+exports.getAllData = function(clients ,fs, JsonData , db , socket){
 
+function base64_encode(file) {
+    // read binary data
+    var bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer(bitmap).toString('base64');
+}
 
 			console.log("Inside getAllData listener...");
 		
@@ -25,8 +31,23 @@ exports.getAllData = function(clients , JsonData , db , socket){
 			
 				
 				}else{
+
+				var arr =[];
+				var obj= result[0];
+				if (collectionName == "basicUserDetails") {
+					
+					if (obj.Display_picture != null) {
+						// get the encoded image from storage
+						var filename= obj.Display_picture;
+						var encodedImage = base64_encode(filename+".jpg"); 
+						obj['Display_picture'] = encodedImage;
+					}
+					
 				
-				socket.emit('Result' , result);
+				}
+				arr.push(obj);
+				
+				socket.emit('Result' , arr);
 				console.log("Data found and Socket emmitted....");
 				socket.disconnect();
 				clients--;
