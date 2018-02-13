@@ -86,7 +86,7 @@ exports.register = function(clients, user, socket , users){
 									authComplete = 1;
 									socket.emit('registerResult' , authComplete);
 									console.log("Emmiting socket");
-									sendResgistrationEmail(fullName, email);
+									//sendResgistrationEmail(fullName, email);
 			
 									
 									}
@@ -126,7 +126,7 @@ exports.register = function(clients, user, socket , users){
 
 
 
-function sendResgistrationEmail(Name, email){
+/*function sendResgistrationEmail(Name, email){
 
 	var transporter = nodemailer.createTransport( "SMTP", {
   service: 'gmail',
@@ -150,4 +150,4 @@ transporter.sendMail(mailOptions, function(error, info){
     console.log('Email sent: ' + info.response);
   }
 }); 
-}
+}*/
