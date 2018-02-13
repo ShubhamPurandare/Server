@@ -6,6 +6,19 @@
     "nodemon": "~1.14.11",
     "mongodb": "~3.0.1",
     "socket.io": "~2.0.4",
-    "nodejs": "4.0.0"
+    "nodejs": "0.0.0"
+  },
+  "name": "Server",
+  "description": "A server for an Android app VI1.2 https://github.com/ShubhamPurandare/VI1.2 Installation steps :",
+  "version": "1.0.0",
+  "main": "Server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShubhamPurandare/Server.git"
+  },
+  "author": "Shubham Purandare",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/ShubhamPurandare/Server/issues"
   }
 }

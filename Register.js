@@ -1,5 +1,5 @@
 
-var nodemailer = require("nodemailer");
+/*var nodemailer = require("nodemailer");
 
 
 var smtpTransport = nodemailer.createTransport("SMTP",{
@@ -8,7 +8,7 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
        user: "shubham.purandare@gmail.com",
        pass: "radarockssmp"
    }
-});
+});*/
 
 exports.register = function(clients, user, socket , users){
 
