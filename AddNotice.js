@@ -9,7 +9,7 @@ var coll2 = db.collection("MyUpdates");
 	var insertPost = function(noticeFor){  // uploads the post in posts collection
 	coll.insert( {  title : title , desc : desc , sender_id : sender_id,  sender_name : sender_name ,
 						 		validUsers : noticeFor  , isImageAttached : isImageAttached , isPDFAttached : isPDFAttached
-						 		, isPPTAttached : isPPTAttached  , isDocAttached : isDocAttached} , function(error,obj){
+						 		, isPPTAttached : isPPTAttached  , isDocAttached : isDocAttached ,isExcelAttached:isExcelAttached } , function(error,obj){
 								if(error){
 									console.log("Error");
 									socket.emit("NoticePosted","0");
@@ -17,7 +17,8 @@ var coll2 = db.collection("MyUpdates");
 									console.log(JSON.stringify(obj.ops));
 									var ops = obj.ops[0];
 									console.log(JSON.stringify(ops._id));
-									var temp = ops._id;		
+									var temp = ops._id;
+									personalPostLog(temp);		
 									insertAttachments(temp);	
 									insertUpdates(temp,noticeFor);
 									socket.emit("NoticePosted","1");
@@ -26,6 +27,36 @@ var coll2 = db.collection("MyUpdates");
 	
 	}
 	
+
+	var personalPostLog = function(post_id){
+
+
+		coll1.find({ "_id" : sender_id}).toArray(function(err , res){
+
+			if (err) {throw err;}
+
+			if(res.length!=0)
+			{
+				var obj = res[0];
+				if(obj!=null)
+				{
+					var array = obj.postsArray;
+					if(array==null)
+					{
+						array=[];		
+					}
+					obj={};
+					obj['postsArray'] = array;
+					array.push(post_id);
+					coll1.update({"_id":sender_id} , {$set:  obj }  );
+					console.log("Added to my postsArray");
+					
+				}
+			}	
+
+		});
+
+	}
 	
 
 	var insertAttachments = function(post_id){  // parse the attchments array and load each attachmant in the post
@@ -134,7 +165,19 @@ var coll2 = db.collection("MyUpdates");
 	var isPDFAttached = jsonObj.isPDFAttached;
 	var isPPTAttached = jsonObj.isPPTAttahced;
 	var isDocAttached = jsonObj.isDocAttached;
+	var isExcelAttached = jsonObj.isExcelAttached;
 	var attachments = [];
+	if (isExcelAttached == 1 ) {
+		var encodedExcel = jsonObj.EXCEL;
+		var date = new Date();
+		var f = sender_id+"excel"+date;
+		var fn_image = sender_id+"excel"+date+".xls";
+		var obj = {};
+		obj['Excel'] = fn_image;
+		attachments.push(obj);
+		storeAttachment("xls" , encodedExcel , f);
+
+	}
 	if (isImageAttached == 1) {
 		var encodedImage = jsonObj.Image;
 		var date = new Date();
@@ -237,16 +280,6 @@ var coll2 = db.collection("MyUpdates");
 	
 	
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

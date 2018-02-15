@@ -8,6 +8,9 @@ function base64_encode(file) {
     return new Buffer(bitmap).toString('base64');
 }
 
+var updates = db.collection("MyUpdates");
+
+
 			console.log("Inside getAllData listener...");
 		
 			var data = JSON.parse(JsonData);
@@ -15,6 +18,47 @@ function base64_encode(file) {
 			var collectionName = data.collectionName;
 			var c = db.collection(collectionName); // takes the collection name and creates a collection variable
 			
+
+
+			var checkIfTTObject = function(){
+
+				if (collectionName == "Load_Time_Table") {
+
+					if (data.senderID != null) {
+
+						senderID = data.senderID;
+
+				updates.find({"_id":senderID}).toArray(function(err,res){
+					if(err)
+					{
+						throw(err);
+					}
+
+					if (res.length != 0) {
+
+
+							console.log("ID is "+senderID);
+							var obj = res[0];
+							console.log(JSON.stringify(obj));
+							
+							updates.update({"_id":senderID }, {$set: { isTTUpdated:false}},function(err , result){if(err)throw err;});
+						
+				}
+				
+			});
+
+
+					}
+
+				}
+
+
+
+			}
+
+
+
+
 			console.log("id is "+grNumber);
 			console.log("Collection name is "+collectionName);
 			c.find({ "_id" :grNumber  }).toArray( function(error , result){
@@ -24,7 +68,7 @@ function base64_encode(file) {
 				if(result.length == 0){
 					console.log("No data found.........");
 					result = "0";
-					socket.emit('Result' , result);		
+					socket.emit('Result' , result);	
 					socket.disconnect();
 					clients--;
 					console.log("Client disconnected.... and clients are "+clients);
@@ -48,6 +92,8 @@ function base64_encode(file) {
 				arr.push(obj);
 				
 				socket.emit('Result' , arr);
+				checkIfTTObject();	
+
 				console.log("Data found and Socket emmitted....");
 				socket.disconnect();
 				clients--;

@@ -61,8 +61,10 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var SubjectsColl = db.collection("Subjects");
 		var noticeUpdate = db.collection("MyUpdates");
 		var postsCall = db.collection("Posts");
-		
-		var allFieldsString = ["personalDetails" , "academicDetails","basicDetails", "residentialInfo", "parentInfo"]
+		var myupdates = db.collection("MyUpdates");
+
+
+		var allFieldsString = ["personalDetails" , "academicDetails","basicUserDetails", "residentialInfo", "parentInfo"]
 		var allFields = [personalDetails, academicDetails, basicDetails, residentialInfo, parentInfo];
 		//console.log(allFieldsString);
 		
@@ -201,6 +203,21 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			}); 
 
 		}
+
+		myupdates.find({"_id":code}).toArray(function(err , res){
+
+			if (err) {throw err;}
+
+			if (res.length !=0) {
+				var object = res[0];
+				if (object.isTTUpdated) {
+						socket.emit('TimeTableUpdates' , "1");
+
+				}
+			}
+
+		});
+
 	
 		
 		sendNotice.send(code , socket , noticeUpdate , fs ,postsCall );

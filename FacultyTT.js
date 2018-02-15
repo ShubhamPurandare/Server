@@ -51,11 +51,14 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 
 				
 							console.log("Match found ");
-							var div = id.substr(-1);
-							var one = id.substr(-7 );
-							var year = one.substr(0, 2);
+							var main = id.substr(-5);
+							var div = main.substr(0 , 1);
+							var one = id.substr(-11);
+							var year = one.substr(0,2);
+							var d = id.length -11;
+							var dept = id.substr(0 , d);
 							temp['Year'] = year;
-							temp['Div'] = div;
+													temp['Div'] = div;
 							console.log(temp);
 							
 							switch(day){

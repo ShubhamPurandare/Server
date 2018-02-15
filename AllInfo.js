@@ -23,9 +23,6 @@ var storeAttachment = function(type , encodedData , filename){
 console.log("In Allinfo listener...");
 		var object = JSON.parse(data);
 		var info = object.obj;
-		//console.log("Object is "+data)
-		var contents = object.contents;
-		var length = object.Length;
 		var grNumber = object.grNumber;
 		var collectionName = object.collectionName;
 		console.log("Collection is : "+ collectionName);
@@ -37,7 +34,6 @@ console.log("In Allinfo listener...");
 		console.log(infoObj);  // correctly parsed		
 		var finalArray = new Array();
 		//console.log(typeof contents);
-		var field = contents.split(','); // recieved details are in csv form
 		
 		if (infoObj.Display_picture != null) {
 
@@ -50,18 +46,7 @@ console.log("In Allinfo listener...");
 			
 
 		}
-		if (infoObj.Cover_picture != null) {
-
-			var encodedImage = infoObj.Cover_picture;
-			// its a request for setting dp
-			var filename = grNumber+"cover_dp";
-			storeAttachment("jpg" , encodedImage , filename);
-			infoObj['Cover_picture'] = filename;
-			console.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
-			
-
-		}
-
+	
 		
 
 
