@@ -39,7 +39,7 @@ console.log("In Allinfo listener...");
 
 			var encodedImage = infoObj.Display_picture;
 			// its a request for setting dp
-			var filename = grNumber+"dp";
+			var filename ="./Media/UserDP/"+ grNumber+"dp";
 			storeAttachment("jpg" , encodedImage , filename);
 			infoObj['Display_picture'] = filename;
 			console.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
@@ -58,7 +58,7 @@ console.log("In Allinfo listener...");
 
 			if(error){
 				throw error;
-				socket.emit('Allinfo' , 0);
+				socket.emit('Allinfo' , "0");
 			} 
 				
 			if(result.length == 0){ // insert
@@ -70,7 +70,7 @@ console.log("In Allinfo listener...");
 				c.update({"_id":grNumber} , {$set:  infoObj }  );
 				console.log("Data updated");
 				console.log("Emmitting socket now .....");
-					socket.emit('Allinfo' , 1);
+					socket.emit('Allinfo' , "1");
 					socket.disconnect();
 					clients--;
 					console.log("Client disconnected.... and clients are "+clients);
