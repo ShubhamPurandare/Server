@@ -10,7 +10,11 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
    }
 });*/
 
-exports.register = function(clients, user, socket , users){
+exports.register = function(clients, user, socket , users , basicUserDetails){
+
+
+
+
 
 
 
@@ -30,9 +34,31 @@ exports.register = function(clients, user, socket , users){
 			var faculty = jsonobj.Faculty;
 			var discipline = jsonobj.Discipline;
 			var program = jsonobj.Program;
-		
+			
 			console.log("name is "+firstName + " lastname is "+lastName);
 			
+
+
+			var addEntryInBUD = function(){
+
+							basicUserDetails.insert( { _id :grNumber , email : email ,  branch : branch ,
+						 		year : year, firstName :firstName, lastName:lastName  }
+						 		 , function(error){
+								if(error){
+									console.log("Error in registeration");
+									
+		
+								}else{
+									var fullName = firstName+" "+lastName;
+									//sendResgistrationEmail(fullName, email);
+									console.log("Inserted in BUD successfully.. ");
+									//sendResgistrationEmail(fullName, email);
+			
+									
+									}
+								});
+				}
+
 			
 			users.find({username : username }).toArray(function(err,data){
 			
@@ -71,7 +97,8 @@ exports.register = function(clients, user, socket , users){
 						
 						
 						users.insert( { _id :grNumber, username : username , email : email , password :password,  branch : branch ,
-						 		year : year, firstName :firstName, lastName:lastName , faculty:faculty , 									discipline:discipline , program:program } , function(error){
+						 		year : year, firstName :firstName, lastName:lastName , faculty:faculty ,discipline:discipline , program:program }
+						 		 , function(error){
 								if(error){
 									console.log("Error in registeration");
 									authComplete=0;
@@ -86,6 +113,8 @@ exports.register = function(clients, user, socket , users){
 									authComplete = 1;
 									socket.emit('registerResult' , authComplete);
 									console.log("Emmiting socket");
+
+									addEntryInBUD();
 									//sendResgistrationEmail(fullName, email);
 			
 									

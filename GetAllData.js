@@ -1,5 +1,5 @@
 
-exports.getAllData = function(clients ,fs, JsonData , db , socket){
+exports.getAllData = function(clients ,fs, JsonData , db , socket , ObjectId){
 
 function base64_encode(file) {
     // read binary data
@@ -16,6 +16,8 @@ var updates = db.collection("MyUpdates");
 			var data = JSON.parse(JsonData);
 			var grNumber = data.GrNumber;
 			var collectionName = data.collectionName;
+			var type = data.isDocByObjectID;
+			console.log("Type is "+type);
 			var c = db.collection(collectionName); // takes the collection name and creates a collection variable
 			
 
@@ -59,7 +61,66 @@ var updates = db.collection("MyUpdates");
 
 
 
-			console.log("id is "+grNumber);
+		
+			if (type != null && type == "1") {
+			
+			/*
+			This code executes for getting objects by ObjectID
+			*/
+
+			c.find({"_id" : ObjectId(grNumber)  }).toArray(function(err, res){
+
+
+				if(err) throw err;
+				
+				if(res.length == 0){
+					console.log("No data found.........");
+					var result = "0";
+					socket.emit('Result' , result);	
+					socket.disconnect();
+					clients--;
+					console.log("Client disconnected.... and clients are "+clients);
+			
+
+				}else{
+
+
+
+				var arr =[];
+				var obj= res[0];
+				if (collectionName == "Pages") {
+					
+					if (obj.CoverDp != null) {
+						// get the encoded image from storage
+						var filename= obj.CoverDp;
+						var encodedImage = base64_encode(filename); 
+						obj['CoverDp'] = encodedImage;
+					}
+				if (obj.DP != null) {
+						// get the encoded image from storage
+						var filename= obj.DP;
+						var encodedImage = base64_encode(filename); 
+						obj['DP'] = encodedImage;
+					}
+						
+				
+				}
+				arr.push(obj);
+				
+
+
+					console.log("Data found and Socket emmitted....");
+				
+					socket.emit('Result' , arr);	
+				
+
+				}
+
+			});
+
+
+			}else{
+				console.log("id is "+grNumber);
 			console.log("Collection name is "+collectionName);
 			c.find({ "_id" :grNumber  }).toArray( function(error , result){
 			
@@ -104,6 +165,12 @@ var updates = db.collection("MyUpdates");
 				
 			
 			});
+			}
+
+
+
+
+			
 
 
 }

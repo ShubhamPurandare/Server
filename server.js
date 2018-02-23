@@ -4,6 +4,8 @@ var port     = process.env.PORT || 8083;
 var mongo = require('mongodb').MongoClient;
 var client = require('socket.io')();
 var clients = 0;
+var ObjectId = require('mongodb').ObjectId;
+
 var rooms = [];
 //var nodemailer = require("nodemailer");
 var facultySubj = require("./FacultySubjects");
@@ -25,6 +27,8 @@ var createPage = require("./createPage");
 var getFile = require("./getFile");
 var updateTT = require("./updateTT");
 var getAttachments = require("./getAttachments");
+var Facs = require("./freeFacs");
+//var getDocbyID = require("./");
 var fs = require('fs');
 var updates = {};
 var notices = [];
@@ -49,7 +53,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var users = db.collection("Users");
 		var personalDetails = db.collection("personalDetails");
 		var academicDetails = db.collection("academicDetails");
-		var basicDetails = db.collection("basicDetails");
+		var basicUserDetails = db.collection("basicUserDetails");
 		var residentialInfo = db.collection("residentialInfo");
 		var parentInfo = db.collection("parentInfo");
 		var chatSection = db.collection("chatSection");
@@ -62,10 +66,12 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var noticeUpdate = db.collection("MyUpdates");
 		var postsCall = db.collection("Posts");
 		var myupdates = db.collection("MyUpdates");
+		var freeFacs = db.collection("FreeFacs");
+		var RescLogs = db.collection(RescLogs);
 
 
 		var allFieldsString = ["personalDetails" , "academicDetails","basicUserDetails", "residentialInfo", "parentInfo"]
-		var allFields = [personalDetails, academicDetails, basicDetails, residentialInfo, parentInfo];
+		var allFields = [personalDetails, academicDetails, basicUserDetails, residentialInfo, parentInfo];
 		//console.log(allFieldsString);
 		
 		
@@ -88,11 +94,14 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		});
 		
 
-	socket.on('Hey' , function(json){
 
-		console.log(json);
+	socket.on('getFreeFacs' , function (jsonObj){
+	
+		Facs.freeFacs(db , socket , jsonObj , freeFacs );
 	});
+		
 
+	
 	socket.on('UpdateTT' , function (jsonObj){
 	
 		updateTT.update(db , socket , jsonObj , TimeTable );
@@ -196,8 +205,18 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 				if (res.length == 0) {
 					// no newly added pages.
 				}else{
-					socket.emit('Adminupdates' , res);
-					console.log("data emmitted"+JSON.stringify(res));
+
+					var array = [];
+					for (var i = 0; i < res.length; i++) {
+						var obj = res[i];
+						var o = {};
+						o["_id"] = obj._id;
+						o["name"] = obj.page_name;
+						array.push(o);
+					}
+
+					socket.emit('Adminupdates' , array);
+					console.log("data emmitted"+JSON.stringify(array));
 				}
 
 			}); 
@@ -261,12 +280,40 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		// add this code in updates array
 		var subjCode = json.SubjCode;
 		var div = json.Div;
+		var dept = json.branch;
 
 		var isAccepted = json.isAccepted;
 		if(isAccepted == 1){
 			// request is accepted use the lookup query
-			
+			// insert a log in resc logs
 			console.log("Request is accepted");
+
+
+			resc.find(dept+"2018").toArray(function(err , res){
+
+					if (err) {throw err;}
+
+					if (res.length == 0) {
+
+						// insert
+						resc.insert({ _id :dept+"2018" });
+					}
+
+					var tempobj = res[0];
+					var array = tempobj.log;
+					if(array==null)
+					{
+						array = [];
+					}
+					array.push(json);
+					var obj = {};
+					obj["log"]=array;	
+					resc.update({"_id":dept+"2018"},{$set : obj});
+					// update
+
+
+			});
+
 			SubjectsColl.aggregate([{$match:{ "_id" : subjCode }  },{ $unwind: "$students"  },{ $lookup : { from: 			"basicUserDetails", localField:"students",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
 			
 			console.log(result);
@@ -404,7 +451,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 		socket.on('getAllData', function(JsonData){
 			
-			getAllDataModule.getAllData(clients ,fs, JsonData , db , socket);
+			getAllDataModule.getAllData(clients ,fs, JsonData , db , socket , ObjectId);
 	
 		});
 
@@ -438,8 +485,8 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		
 		socket.on('register', function(user){
 		
-			registerModule.register(clients, user, socket , users);
-
+			registerModule.register(clients, user, socket , users , basicUserDetails);
+ 
 		}); // end of socket.on
 
 // -----------------------------------------------------------------------------------------------------------------------------------------

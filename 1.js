@@ -1,8 +1,12 @@
-var t = "ComputerTESem2C2018";
+var tokens = new Array("8.00" , "9.00" , "10.30" , "11.30" , "1.15", "2.15", "3.30" , "4.30", "5.30" );
 
-var i = t.substr(-5);
-var div = i.substr(0 , 1);
-var one = t.substr(-11);
-var year = one.substr(0,2);
-console.log(div);
-console.log(year);
+
+var i = tokens.indexOf("8.00");
+tokens.splice(i , 1);
+
+var regexstring = "whatever";
+var regexp = new RegExp(regexstring, "gi");
+var str = "whateverTest";
+var str2 = str.replace(regexp, "other");
+
+console.log(str2);

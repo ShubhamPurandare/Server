@@ -73,12 +73,12 @@ var insertPageInUserProfile = function(pageId , admin_id){
 			var DP = jsonObj.DP;
 			var admin_name = jsonObj.Admin_name; 
 			var Desc = jsonObj.Desc;
-			var f = page_name+"DP"+date;
-			var fn_Dp = page_name+"DP"+date+".jpg";
+			var f = "./Media/Pages/"+page_name+"DP"+date;
+			var fn_Dp = "./Media/Pages/"+page_name+"DP"+date+".jpg";
 			storeAttachment("jpg" , DP , f);
 
-			f = page_name+"Cover_DP"+date;
-			fn_cover = page_name+"Cover_DP"+date+".jpg";
+			f = "./Media/Pages/"+page_name+"Cover_DP"+date;
+			fn_cover = "./Media/Pages/"+page_name+"Cover_DP"+date+".jpg";
 			storeAttachment("jpg" , CoverDp , f);
 
 			pageColl.insert({admin_id : admin_id ,admin_name : admin_name,CoverDp : fn_cover , DP : fn_Dp , Desc:Desc ,page_name : page_name , Timestamp : date, isApproved : 0  }  , function(error,obj){
