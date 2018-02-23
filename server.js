@@ -67,7 +67,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var postsCall = db.collection("Posts");
 		var myupdates = db.collection("MyUpdates");
 		var freeFacs = db.collection("FreeFacs");
-		var RescLogs = db.collection(RescLogs);
+		var RescLogs = db.collection("RescLogs");
 
 
 		var allFieldsString = ["personalDetails" , "academicDetails","basicUserDetails", "residentialInfo", "parentInfo"]
