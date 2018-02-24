@@ -24,7 +24,7 @@ exports.freeFacs = function(db , socket , jsonObj , freeFacs){
 
 			var arrayToSend = hashmap[key];
 
-			console.log(arrayToSend);
+			console.re.log(arrayToSend);
 			socket.emit("freeFacsRes", arrayToSend);
 		}
 

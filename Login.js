@@ -7,34 +7,34 @@ exports.login= function(clients, user ,users , socket){
 				var username = jsonobj.username;
 				var password = jsonobj.password; 
 				
-				console.log("json string is "+jsonobj);
+				console.re.log("json string is "+jsonobj);
 				// check if user exists
-				console.log("logged in user is "+username + " Password "+password);
+				console.re.log("logged in user is "+username + " Password "+password);
 				users.find({
 					 $and:[
 						 {"username":username},
 						 {"password":password} 
 					      ]}
 					   ).limit(1).toArray( function(error , result){
-					console.log("username is "+jsonobj.username);
+					console.re.log("username is "+jsonobj.username);
 					if(error){
 						throw error;
 					}else{
 						
-						console.log(result.length);
+						console.re.log(result.length);
 						if(result.length != 0){//user exists hence log in the user .
-							console.log("User found");						
-							console.log(result);
+							console.re.log("User found");						
+							console.re.log(result);
 							// load backup....
 							 
 							// var obj = result[0];
 							 //var GrNumber = obj._id;
-							 //console.log("Gr Number is :"+GrNumber);
+							 //console.re.log("Gr Number is :"+GrNumber);
 							 
 							 var finalObj = {};// final json obj which will store all data backup.
 							 
 							/* finalObj["Contents"] = allFieldsString;
-							 console.log("Currently FinalObj contains :"+finalObj);
+							 console.re.log("Currently FinalObj contains :"+finalObj);
 							 
 							 for(var k=0 ; k< allFields.length ; k++){
 							 
@@ -46,13 +46,13 @@ exports.login= function(clients, user ,users , socket){
 							
 							isAuth = 1;
 						}else{ // user doesnot exists 
-							console.log("No corresponding account found , please signup first");
+							console.re.log("No corresponding account found , please signup first");
 							isAuth = 0;
 							
 						}
 						socket.emit('loginResult' , isAuth );
 						if(isAuth == 1){
-							console.log("Emitting socket now ...");
+							console.re.log("Emitting socket now ...");
 							socket.emit('JSON', result);
 						}
 					
@@ -69,8 +69,8 @@ exports.login= function(clients, user ,users , socket){
 				
 		function getBackup(finalObj, collectionName , GrNumber , key, index, lastIndex){
 		
-			console.log("Loop "+index+" Getting backup for collectionName :"+collectionName +" and GrNumber :"+GrNumber +" key is "+key);
-			console.log("Current status of final obj is "+finalObj);
+			console.re.log("Loop "+index+" Getting backup for collectionName :"+collectionName +" and GrNumber :"+GrNumber +" key is "+key);
+			console.re.log("Current status of final obj is "+finalObj);
 			
 			// get Backup
 			
@@ -79,7 +79,7 @@ exports.login= function(clients, user ,users , socket){
 			cursor.each(function (err, doc) {
 
      			if (doc != null) {
-            			console.log(doc);
+            			console.re.log(doc);
             			finalObj[key] = doc;
             			
             			// check if index equals last index, then emit a socket
@@ -87,7 +87,7 @@ exports.login= function(clients, user ,users , socket){
             			if(index == lastIndex){
             			
             			//socket.emit('AllBackup' , finalObj);
-            			console.log("Emmitting socket...");
+            			console.re.log("Emmitting socket...");
             			
             			// emit socket..
             			
@@ -98,7 +98,7 @@ exports.login= function(clients, user ,users , socket){
 
         		}else{
         		
-        			console.log("No corresponding entry found for key :"+key);
+        			console.re.log("No corresponding entry found for key :"+key);
         			
         		} 
 		

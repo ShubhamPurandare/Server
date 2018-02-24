@@ -8,7 +8,7 @@ exports.stats = function(db , socket , jsonObj){
 	fields.push("_id");
 	//var json = JSON.parse(jsonObj);
 	// 1. display
-	console.log(JSON.stringify(jsonObj));
+	console.re.log(JSON.stringify(jsonObj));
 	
 	var createObj = function(coll ){
 				
@@ -27,12 +27,12 @@ exports.stats = function(db , socket , jsonObj){
 	
 	var createMatch = function(obj){
 	
-		console.log("obj is  "+JSON.stringify(obj));
+		console.re.log("obj is  "+JSON.stringify(obj));
 		var key = obj.Field;
 		var val = obj.Value;
-		console.log("key is  "+key);
+		console.re.log("key is  "+key);
 		
-		console.log("val is  "+val);
+		console.re.log("val is  "+val);
 	
 		var o ={};
 			
@@ -49,11 +49,11 @@ exports.stats = function(db , socket , jsonObj){
 	var fieldsToSend = jsonObj.Field;
 	var matchConds = [];
 	matchConds = jsonObj.Matched;
-	//console.log("Fields are "+JSON.stringify(fieldsToSend));
-	//console.log("Matched condion is "+JSON.stringify(matchConds));
+	//console.re.log("Fields are "+JSON.stringify(fieldsToSend));
+	//console.re.log("Matched condion is "+JSON.stringify(matchConds));
 	if(matchConds != null)
 	for(var o in matchConds){
-		//console.log("Condition is "+JSON.stringify());
+		//console.re.log("Condition is "+JSON.stringify());
 		var object = matchConds[o]; // object which contains forst match condition
 		collName = object.CollName;
 		var conditions = object.array;
@@ -67,7 +67,7 @@ exports.stats = function(db , socket , jsonObj){
 	}
 	
 	
-	console.log("Condition is "+JSON.stringify(arrOfQueries));
+	console.re.log("Condition is "+JSON.stringify(arrOfQueries));
 		
 	// do lookups
 	 for(var ob in fieldsToSend){
@@ -99,19 +99,19 @@ exports.stats = function(db , socket , jsonObj){
 				while(d != collsUsed.length){
 			
 					var name = collsUsed[d];
-					//console.log(name);
+					//console.re.log(name);
 					if(item[name] != null){
 						var t = item[name];
-						//console.log("item name is "+JSON.stringify(item[name]));
+						//console.re.log("item name is "+JSON.stringify(item[name]));
 						
 						var temp = t[0];
-						//console.log("Temp is "+JSON.stringify(temp));
-						//console.log("Temp object is "+JSON.stringify(temp));
+						//console.re.log("Temp is "+JSON.stringify(temp));
+						//console.re.log("Temp object is "+JSON.stringify(temp));
 						if(temp != null  ){
 						
 							for(var key in temp) r1[key] = temp[key];
 						
-						//	console.log("R1 is "+JSON.stringify(r1));
+						//	console.re.log("R1 is "+JSON.stringify(r1));
 						}
 							delete item[name];
 						
@@ -121,11 +121,11 @@ exports.stats = function(db , socket , jsonObj){
 					}
 				
 					d++;
-					//console.log("ITEM NOW IS "+JSON.stringify(item));
+					//console.re.log("ITEM NOW IS "+JSON.stringify(item));
 					
 				}
 				for(var key in item) r1[key] = item[key];
-				//console.log("Modified object is "+JSON.stringify(r1));
+				//console.re.log("Modified object is "+JSON.stringify(r1));
 				finalArr.push(r1);
 			
 	 		
@@ -139,8 +139,8 @@ exports.stats = function(db , socket , jsonObj){
 	 }
 	 
 	 
-	console.log("Condition is "+JSON.stringify(arrOfQueries));
-	console.log("Collections used are  "+collsUsed);
+	console.re.log("Condition is "+JSON.stringify(arrOfQueries));
+	console.re.log("Collections used are  "+collsUsed);
 	
 	
 	// run the aggregate query
@@ -163,12 +163,12 @@ exports.stats = function(db , socket , jsonObj){
 		
 			if(err)throw err;
 			
-			console.log(JSON.stringify(result));
+			console.re.log(JSON.stringify(result));
 			// make a single json object of all 
 			var modifiedArray =  workOnTheresult(result);
-			console.log("FINAL ARRAY IS  "+JSON.stringify(modifiedArray));
+			console.re.log("FINAL ARRAY IS  "+JSON.stringify(modifiedArray));
 			
-			console.log("FIELDS TO SEND ARE "+fields);
+			console.re.log("FIELDS TO SEND ARE "+fields);
 			var arrayToSend = [];
 			
 			for(var d in modifiedArray ){
@@ -179,12 +179,12 @@ exports.stats = function(db , socket , jsonObj){
 					var field = fields[f];
 					if(obj[field]!= null){
 					
-						console.log("THE OBJECT CONTAINS "+field);
+						console.re.log("THE OBJECT CONTAINS "+field);
 						tempObj[field] = obj[field];
 					
 					}else{
 						
-						console.log("THE OBJECT DOES NOT CONTAINS "+field);
+						console.re.log("THE OBJECT DOES NOT CONTAINS "+field);
 						tempObj[field] = "";
 					
 					}
@@ -192,14 +192,14 @@ exports.stats = function(db , socket , jsonObj){
 				
 			
 				}
-				console.log("The Temp object is "+JSON.stringify(tempObj));
+				console.re.log("The Temp object is "+JSON.stringify(tempObj));
 				arrayToSend.push(tempObj);
 				
 			
 			}
 			
 			
-				console.log("The final array is  "+JSON.stringify(arrayToSend));
+				console.re.log("The final array is  "+JSON.stringify(arrayToSend));
 				socket.emit("StatsResults" ,arrayToSend );
 			
 			

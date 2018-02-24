@@ -2,16 +2,16 @@
 exports.getData = function(clients , JsonData , db , socket){
 
 
-	console.log("Inside getData listener...");
+	console.re.log("Inside getData listener...");
 		
 	var data = JSON.parse(JsonData);
-	console.log("Data is "+JsonData);
+	console.re.log("Data is "+JsonData);
 	
 	var key = data.Key;
 	var coll = data.Collection;
 	
 	var c = db.collection(coll); // takes the collection name and creates a collection variable
-	console.log("Coll is is "+JsonData);
+	console.re.log("Coll is is "+JsonData);
 	
 	
 	c.find().toArray( function(error , result){
@@ -24,21 +24,21 @@ exports.getData = function(clients , JsonData , db , socket){
 			
 			var item = result[c];
 			var id = item._id;
-			console.log("Id is "+id);
-			console.log("key is "+key);
+			console.re.log("Id is "+id);
+			console.re.log("key is "+key);
 			
 			if(id.indexOf(key) >= 0){
-				console.log("valid Document");
+				console.re.log("valid Document");
 				arr.push(item);
-			console.log("Matched ");
+			console.re.log("Matched ");
 		
 			} 
 		
 			c++;
-			console.log("Loop "+c);
+			console.re.log("Loop "+c);
 	
 			if(c == result.length){
-				console.log("Emmitting socket");
+				console.re.log("Emmitting socket");
 				
 				socket.emit("MatchingResult" , arr);
 			}

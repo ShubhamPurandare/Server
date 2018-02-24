@@ -1,5 +1,6 @@
-var nodemailer = require('nodemailer');
 
+var nodemailer = require('nodemailer');
+var consolere = require('console-remote-client').connect('console.re','80','VIConnectChannel');
 var transporter = nodemailer.createTransport( "SMTP", {
   service: 'gmail',
   auth: {
@@ -17,8 +18,8 @@ var mailOptions = {
 
 transporter.sendMail(mailOptions, function(error, info){
   if (error) {
-    console.log(error);
+    console.re.log(error);
   } else {
-    console.log('Email sent: ' + info.response);
+    console.re.log('Email sent: ' + info.response);
   }
 }); 

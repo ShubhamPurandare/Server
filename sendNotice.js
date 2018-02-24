@@ -9,7 +9,7 @@ var notices = [];
 
 var print = function(object)
 {
-	console.log(JSON.stringify(object));
+	console.re.log(JSON.stringify(object));
 }
 function base64_encode(file) {
    if (fs.existsSync(file)) {
@@ -24,7 +24,7 @@ function base64_encode(file) {
 
 var getPosts = function(socket , id,len){
 		
-		console.log("id is "+id);
+		console.re.log("id is "+id);
 
 
 		postsCall.find({"_id":id}).toArray(function(err,res){
@@ -45,17 +45,17 @@ var getPosts = function(socket , id,len){
 				{
 					var imgPath = obj.Image;
 					var encodedImage = base64_encode(imgPath);
-					//console.log(encodedImage);
+					//console.re.log(encodedImage);
 					obj.Image = encodedImage;
 				}
 				notices.push(obj);
 			
 				if(notices.length==len)
 				{
-					console.log("Done");
+					console.re.log("Done");
 					print(notices);
 					socket.emit("PostsResults",notices);
-					console.log("Sent");
+					console.re.log("Sent");
 					notices = [];
 				}
 			}
@@ -84,7 +84,7 @@ noticeUpdate.find({"_id":code}).toArray(function(error,res){
 				var i=0;
 				while(i<arrayOfUpdates.length)
 				{
-					console.log("Elements are "+arrayOfUpdates[i]);
+					console.re.log("Elements are "+arrayOfUpdates[i]);
 					getPosts(socket , arrayOfUpdates[i],arrayOfUpdates.length);
 					i++;
 				}

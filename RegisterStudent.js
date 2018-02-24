@@ -13,15 +13,15 @@ exports.registerStudent = function(clients, data , callback , socket , db ){
 			var i=0;
 			while(i<field.length){
 
-				console.log("Loop :"+i);
-				console.log(field[i]);
+				console.re.log("Loop :"+i);
+				console.re.log(field[i]);
 				var str = field[i];
 				var str1 = str.replace("[" , "");
-				console.log(str1);
+				console.re.log(str1);
 				var str2 =str1.replace(" " , "");
-				console.log(str2);
+				console.re.log(str2);
 				var str3 = str2.replace("]" , "");
-				console.log(str3);
+				console.re.log(str3);
 				sendData(socket , clients, db , str3 ,Grumber, div );
 				i++;	
 				
@@ -29,7 +29,7 @@ exports.registerStudent = function(clients, data , callback , socket , db ){
 			
 					socket.disconnect();
 					clients--;
-					console.log("Client disconnected.... and clients are "+clients);
+					console.re.log("Client disconnected.... and clients are "+clients);
 			
 			
 
@@ -41,18 +41,18 @@ function sendData(socket ,clients , db ,  code, Grumber , div ){
 			 var c = db.collection("Subjects");
 			
 			
-				console.log("Code recieved is "+code);
+				console.re.log("Code recieved is "+code);
 				
 				c.find( { _id : code }  ).toArray( function(error , result){
 			
 				if(error)throw err;
 
 				if(result.length == 0 ){
-					console.log("NO data found");
-					console.log("We are registering the first student for this subject :"+code + " for div  "+div);
+					console.re.log("NO data found");
+					console.re.log("We are registering the first student for this subject :"+code + " for div  "+div);
 					
 					c.insert({ _id: code , students: [ Grumber] })
-					console.log("Inserted successfully!");
+					console.re.log("Inserted successfully!");
 					
 					
 			
@@ -64,11 +64,11 @@ function sendData(socket ,clients , db ,  code, Grumber , div ){
 				
 				c.find( {_id:code }/*, { students : { $elemMatch :{$eq: Grumber } } }   */).toArray(function(err, result){
 				
-				console.log("Result is "+JSON.stringify(result));
+				console.re.log("Result is "+JSON.stringify(result));
 				var obj = result[0];
 				
 				c.update( {"_id" :code } , {$addToSet : { students : Grumber  } } ,function(err , result){if(err)throw err;} );
-				console.log("Student with GR Number "+Grumber +" registered successfuly");
+				console.re.log("Student with GR Number "+Grumber +" registered successfuly");
 						
 				
 				

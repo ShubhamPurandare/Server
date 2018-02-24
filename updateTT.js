@@ -1,17 +1,17 @@
 exports.update= function(db , socket , jsonObj , TimeTable ){
 
 	var print = function(msg){
-		console.log(JSON.stringify(msg));
+		console.re.log(JSON.stringify(msg));
 	}
 
-	console.log("In function");
+	console.re.log("In function");
 var updates = db.collection("MyUpdates");
 
 	var days = ["Monday" , "Tuesday" , "Wednesday" , "Thursday" , "Friday" , "Saturday"];
 	var id = jsonObj.id;
 	var arrayOfFac = jsonObj.Object;
-	console.log("The json is "	);
-	console.log("id is "+id);
+	console.re.log("The json is "	);
+	console.re.log("id is "+id);
 	print(jsonObj);
 	var updatedDayArray = [];
 	var updatedTT = {};
@@ -41,9 +41,9 @@ var updates = db.collection("MyUpdates");
 				if (res.length != 0) {
 
 
-						console.log("ID is "+receiver_id);
+						console.re.log("ID is "+receiver_id);
 						var obj = res[0];
-						console.log(JSON.stringify(obj));
+						console.re.log(JSON.stringify(obj));
 						
 						updates.update({"_id":receiver_id }, {$set: { isTTUpdated:true}},function(err , result){if(err)throw err;});
 					
@@ -59,7 +59,7 @@ var insertUpdates = function(array)
 		while(i<array.length)
 		{
 		
-		console.log("ID is "+array[i]);
+		console.re.log("ID is "+array[i]);
 			postInsert(array[i]);
 		i++;
 		}
@@ -79,7 +79,7 @@ var insertUpdates = function(array)
 
 					   	if (error) {throw error;}
 
-					   	console.log(result);
+					   	console.re.log(result);
 
 					   	for (var i in result){
 
@@ -107,7 +107,7 @@ var insertUpdates = function(array)
 
 		if (err) {throw err;}	
 
-		console.log("res is "+print(res));
+		console.re.log("res is "+print(res));
 			
 		if (res.length != 0) {
 			var recObj = res[0];
@@ -120,7 +120,7 @@ var insertUpdates = function(array)
 				var day = days[i];
 				var dayOfObject = recObj[day];
 				// day object
-				console.log("Day is "+day);
+				console.re.log("Day is "+day);
 				print(dayOfObject);
 				updatedDayArray =[];
 				for (var i = 0; i < dayOfObject.length; i++) {
@@ -139,7 +139,7 @@ var insertUpdates = function(array)
 
 			}
 
-			console.log("THE FINAL TT IS ");
+			console.re.log("THE FINAL TT IS ");
 			print(updatedTT);
 			updatedTT['_id'] =  id;
 

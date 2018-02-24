@@ -8,6 +8,7 @@ var ObjectId = require('mongodb').ObjectId;
 
 var rooms = [];
 //var nodemailer = require("nodemailer");
+var consolere = require('console-remote-client').connect('console.re','80','VIConnectChannel');
 var facultySubj = require("./FacultySubjects");
 var facultyTT = require("./FacultyTT");
 var loginModule = require("./Login");
@@ -35,19 +36,19 @@ var notices = [];
 
 var print = function(object)
 {
-	console.log(JSON.stringify(object));
+	console.re.log(JSON.stringify(object));
 }
 
 mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , database){
 
 	if(err){
 		throw err;
-		console.log("Error connecting to mlab ...");
+		console.re.log("Error connecting to mlab ...");
 	}else{
 		var db = database.db("viit");
 		
 
-		console.log("Connected to mlab ...");
+		console.re.log("Connected to mlab ...");
 		var collection = db.collection("Chat"); // create and define all collections here ..
 		var profile = db.collection("profile");
 		var users = db.collection("Users");
@@ -72,25 +73,25 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 		var allFieldsString = ["personalDetails" , "academicDetails","basicUserDetails", "residentialInfo", "parentInfo"]
 		var allFields = [personalDetails, academicDetails, basicUserDetails, residentialInfo, parentInfo];
-		//console.log(allFieldsString);
+		//console.re.log(allFieldsString);
 		
 		
 		client.on('disconnect' , function(socket){
 			clients--;
-			console.log("Client disconnected.... number of clients is "+ clients);
+			console.re.log("Client disconnected.... number of clients is "+ clients);
 		});
 					
 
 		
 		client.on('connection' , function(socket ){
 		clients++;
-		console.log("Client "+clients+ " Connected.....");
+		console.re.log("Client "+clients+ " Connected.....");
 		
 		
 		
 		client.on('disconnect' , function(socket){
 			clients--;
-			console.log("Client disconnected.... number of clients is "+ clients);
+			console.re.log("Client disconnected.... number of clients is "+ clients);
 		});
 		
 
@@ -151,33 +152,33 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 	socket.on('ValidateTTRescheduling' , function(jsonobj){
 	
-		console.log("Recieved object is "+jsonobj);
+		console.re.log("Recieved object is "+jsonobj);
 		var data = JSON.parse(jsonobj);
-		console.log("Data is "+data);
+		console.re.log("Data is "+data);
 		var code = data.code;
 		var object = data.requestObject;
-		console.log("Code is "+code);
+		console.re.log("Code is "+code);
 		var codeStr = [code];	
 		var tempArray = updates[codeStr];
 		
-		console.log("TempArray contains :"+JSON.stringify(tempArray));
+		console.re.log("TempArray contains :"+JSON.stringify(tempArray));
 		if(tempArray != null){
-			console.log("Array not empty .. ");
+			console.re.log("Array not empty .. ");
 			tempArray.push(object);
 			updates[codeStr] = tempArray;
 		}else{
 		
-			console.log("Array empty .. creating the array");
+			console.re.log("Array empty .. creating the array");
 		
 			tempArray = [];
 			tempArray.push(object);
-			console.log("Code str is "+codeStr);
+			console.re.log("Code str is "+codeStr);
 			updates[codeStr] = tempArray;
 		
 		
 		}
 		
-		console.log(updates);
+		console.re.log(updates);
 			
 	
 	
@@ -186,11 +187,11 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	
 	socket.on('LookForUpdates' , function(jsonobj){
 	
-		console.log("Recieved object is "+jsonobj);
+		console.re.log("Recieved object is "+jsonobj);
 		var data = JSON.parse(jsonobj);
-		console.log("Data is "+data);
+		console.re.log("Data is "+data);
 		var code = data.Code;
-		console.log("Code is "+code);
+		console.re.log("Code is "+code);
 		var codeStr = [code];	
 	
 		var objToSend = updates[codeStr];
@@ -216,7 +217,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 					}
 
 					socket.emit('Adminupdates' , array);
-					console.log("data emmitted"+JSON.stringify(array));
+					console.re.log("data emmitted"+JSON.stringify(array));
 				}
 
 			}); 
@@ -244,24 +245,24 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		if(objToSend != null){
 		
 			
-			console.log("Data found ...."+JSON.stringify(objToSend));
+			console.re.log("Data found ...."+JSON.stringify(objToSend));
 			socket.emit('updates',objToSend );
 			// remove the object from the array.
 			var array = updates[codeStr];
-			console.log("Initially ..."+JSON.stringify(array));
+			console.re.log("Initially ..."+JSON.stringify(array));
 			array = array.filter(function(el){ return el.RequestFacEID != code; });
 			if(array.length == 0){
-				console.log("array length 0");
+				console.re.log("array length 0");
 				delete updates[codeStr];
-				console.log("Now updates is "+JSON.stringify(updates));
+				console.re.log("Now updates is "+JSON.stringify(updates));
 			}else{
 				updates[codeStr] = array;
 			}
 			
-			console.log("Socket emmitted..");
+			console.re.log("Socket emmitted..");
 			// delete the object from array 
 		}else{
-			console.log("No Data found ....");
+			console.re.log("No Data found ....");
 			socket.emit('updates',"0" );
 		
 		}
@@ -271,9 +272,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	socket.on('RespondToReq' , function(data){
 	
 		var validUsers = [];
-		console.log("In RespondToReq");
+		console.re.log("In RespondToReq");
 		var json = JSON.parse(data);
-		console.log("Recieved object is "+JSON.stringify(json));
+		console.re.log("Recieved object is "+JSON.stringify(json));
 		var RescCode = json.RescFacEID;
 		// remove object of this code from updates array;
 		var reqCode = json.RequestFacEID;
@@ -286,17 +287,17 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		if(isAccepted == 1){
 			// request is accepted use the lookup query
 			// insert a log in resc logs
-			console.log("Request is accepted");
+			console.re.log("Request is accepted");
 
 
-			resc.find(dept+"2018").toArray(function(err , res){
+		/*	RescLogs.find(dept+"2018").toArray(function(err , res){
 
 					if (err) {throw err;}
 
 					if (res.length == 0) {
 
 						// insert
-						resc.insert({ _id :dept+"2018" });
+						RescLogs.insert({ _id :dept+"2018" });
 					}
 
 					var tempobj = res[0];
@@ -308,41 +309,41 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 					array.push(json);
 					var obj = {};
 					obj["log"]=array;	
-					resc.update({"_id":dept+"2018"},{$set : obj});
+					RescLogs.update({"_id":dept+"2018"},{$set : obj});
 					// update
 
 
-			});
+			});*/
 
 			SubjectsColl.aggregate([{$match:{ "_id" : subjCode }  },{ $unwind: "$students"  },{ $lookup : { from: 			"basicUserDetails", localField:"students",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
 			
-			console.log(result);
+			console.re.log(result);
 			
 			for(var i=0; i<result.length; i++){
 		 	
 		 		var obj = result[i];
-		 		//console.log(obj);
+		 		//console.re.log(obj);
 		 		 var matched = obj.matched;
-		 		console.log(matched);
+		 		console.re.log(matched);
 		 		if(matched.length >0){
 		 			var obj1 = matched[0];
 		 			if(obj1.div == div){
-		 				console.log("yessssssssssssss");
+		 				console.re.log("yessssssssssssss");
 		 				validUsers.push(obj1._id);
 		 				var tempArray = updates[obj1._id];
 		
-						console.log("TempArray contains :"+JSON.stringify(tempArray));
+						console.re.log("TempArray contains :"+JSON.stringify(tempArray));
 						if(tempArray != null){
-							console.log("Array not empty .. ");
+							console.re.log("Array not empty .. ");
 								tempArray.push(json);
 							updates[obj1._id] = tempArray;
 						}else{
 		
-							console.log("Array empty .. creating the array");
+							console.re.log("Array empty .. creating the array");
 		
 							tempArray = [];
 							tempArray.push(json);
-							console.log("Code str is "+obj1._id);
+							console.re.log("Code str is "+obj1._id);
 							updates[obj1._id] = tempArray;
 		
 		
@@ -353,8 +354,8 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		 		
 		 		 
 		 	}
-		 	console.log("Send notifications to "+validUsers);
-		 	console.log("Updates array is "+JSON.stringify(updates));
+		 	console.re.log("Send notifications to "+validUsers);
+		 	console.re.log("Updates array is "+JSON.stringify(updates));
 			
 			
 			
@@ -364,7 +365,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			
 			
 		}else{
-		console.log("Request is not accepted");
+		console.re.log("Request is not accepted");
 			
 			// request is not accepted
 		}
@@ -372,39 +373,39 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var codeStr = [RescCode];	
 	
 		var array = updates[codeStr];
-		console.log("Initially ..."+JSON.stringify(array));
+		console.re.log("Initially ..."+JSON.stringify(array));
 		if(array != null){
 		array = array.filter(function(el){ return el.RequestFacEID != reqCode; });
 		if(array.length == 0){
 				delete updates[codeStr];
-				console.log("array length 0");
+				console.re.log("array length 0");
 			}else{
 				updates[codeStr] = array;
 			}
 		}
-		console.log("filtered.... "+JSON.stringify(updates));
+		console.re.log("filtered.... "+JSON.stringify(updates));
 		// add the new object for reqCode.
 		codeStr = [reqCode];	
 		var tempArray = updates[codeStr];
 		
-		console.log("TempArray contains :"+JSON.stringify(tempArray));
+		console.re.log("TempArray contains :"+JSON.stringify(tempArray));
 		if(tempArray != null){
-			console.log("Array not empty .. ");
+			console.re.log("Array not empty .. ");
 			tempArray.push(json);
 			updates[codeStr] = tempArray;
 		}else{
 		
-			console.log("Array empty .. creating the array");
+			console.re.log("Array empty .. creating the array");
 		
 			tempArray = [];
 			tempArray.push(json);
-			console.log("Code str is "+codeStr);
+			console.re.log("Code str is "+codeStr);
 			updates[codeStr] = tempArray;
 		
 		
 		}
 		
-		console.log(updates);
+		console.re.log(updates);
 			
 		
 		
@@ -502,7 +503,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 
 client.listen(port);
-console.log("Connected on port "+port);
+console.re.re.log("Connected on port "+port);
 
 //code ends
 

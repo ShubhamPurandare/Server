@@ -1,4 +1,5 @@
 var fs = require('fs');
+var consolere = require('console-remote-client').connect('console.re','80','VIConnectChannel');
 
 function base64_encode(file) {
     // read binary data
@@ -9,4 +10,4 @@ function base64_encode(file) {
 
 
 var data = base64_encode("U1417654pptFri Jan 26 2018 00:33:19 GMT+0000 (GMT).ppt.ppt");
-console.log(data);
+console.re.log(data);

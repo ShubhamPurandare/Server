@@ -11,13 +11,13 @@ function base64_encode(file) {
 var updates = db.collection("MyUpdates");
 
 
-			console.log("Inside getAllData listener...");
+			console.re.log("Inside getAllData listener...");
 		
 			var data = JSON.parse(JsonData);
 			var grNumber = data.GrNumber;
 			var collectionName = data.collectionName;
 			var type = data.isDocByObjectID;
-			console.log("Type is "+type);
+			console.re.log("Type is "+type);
 			var c = db.collection(collectionName); // takes the collection name and creates a collection variable
 			
 
@@ -39,9 +39,9 @@ var updates = db.collection("MyUpdates");
 					if (res.length != 0) {
 
 
-							console.log("ID is "+senderID);
+							console.re.log("ID is "+senderID);
 							var obj = res[0];
-							console.log(JSON.stringify(obj));
+							console.re.log(JSON.stringify(obj));
 							
 							updates.update({"_id":senderID }, {$set: { isTTUpdated:false}},function(err , result){if(err)throw err;});
 						
@@ -74,12 +74,12 @@ var updates = db.collection("MyUpdates");
 				if(err) throw err;
 				
 				if(res.length == 0){
-					console.log("No data found.........");
+					console.re.log("No data found.........");
 					var result = "0";
 					socket.emit('Result' , result);	
 					socket.disconnect();
 					clients--;
-					console.log("Client disconnected.... and clients are "+clients);
+					console.re.log("Client disconnected.... and clients are "+clients);
 			
 
 				}else{
@@ -109,7 +109,7 @@ var updates = db.collection("MyUpdates");
 				
 
 
-					console.log("Data found and Socket emmitted....");
+					console.re.log("Data found and Socket emmitted....");
 				
 					socket.emit('Result' , arr);	
 				
@@ -120,19 +120,19 @@ var updates = db.collection("MyUpdates");
 
 
 			}else{
-				console.log("id is "+grNumber);
-			console.log("Collection name is "+collectionName);
+				console.re.log("id is "+grNumber);
+			console.re.log("Collection name is "+collectionName);
 			c.find({ "_id" :grNumber  }).toArray( function(error , result){
 			
 				if(error) throw error;
 				
 				if(result.length == 0){
-					console.log("No data found.........");
+					console.re.log("No data found.........");
 					result = "0";
 					socket.emit('Result' , result);	
 					socket.disconnect();
 					clients--;
-					console.log("Client disconnected.... and clients are "+clients);
+					console.re.log("Client disconnected.... and clients are "+clients);
 			
 				
 				}else{
@@ -155,10 +155,10 @@ var updates = db.collection("MyUpdates");
 				socket.emit('Result' , arr);
 				checkIfTTObject();	
 
-				console.log("Data found and Socket emmitted....");
+				console.re.log("Data found and Socket emmitted....");
 				socket.disconnect();
 				clients--;
-				console.log("Client disconnected.... and clients are "+clients);
+				console.re.log("Client disconnected.... and clients are "+clients);
 			
 			
 				}

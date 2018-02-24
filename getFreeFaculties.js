@@ -2,6 +2,7 @@
 
 var mongo = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
+var consolere = require('console-remote-client').connect('console.re','80','VIConnectChannel');
 var client = require('socket.io')();
 var clients = 0;
 var days = new Array("Monday","Tuesday", "Wednesday","Thursday","Friday", "Saturday");
@@ -19,7 +20,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		//var db = database.db("viit");
 	
 
-			console.log("Connected to mlab ...");
+			console.re.log("Connected to mlab ...");
 			var TimeTable = db.collection("Load_Time_Table");
 			var users = db.collection("basicUserDetails");
 			var freemap = db.collection("FreeFacs");
@@ -62,18 +63,18 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 								// insert
 
 								freemap.insert({  _id : id ,  map : ""  });
-								console.log("Inserted");
+								console.re.log("Inserted");
 
 							}else{
-								console.log("result is "+JSON.stringify(res));
+								console.re.log("result is "+JSON.stringify(res));
 
 							}
 
 							var obj = {};
 							var obj1 = JSON.stringify(hashmap);
 							obj["map"] = hashmap;
-							console.log(obj1);
-							console.log(id);
+							console.re.log(obj1);
+							console.re.log(id);
 							
 										//	c.update({"_id":grNumber} , {$set:  infoObj }  );
 
@@ -99,7 +100,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 				var ryear = "/2018/";
 
 
-				console.log(rd);
+				console.re.log(rd);
 
 				TimeTable.find(
 				{ $and:[
@@ -111,7 +112,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 					if (err) {throw err;}
 
-					console.log("res is "+res);
+					console.re.log("res is "+res);
 
 					// list of TT objs of the whole dept 
 
@@ -137,21 +138,21 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						 					
 
 
-						 					console.log("Key is "+key + "  eid is "+eid);
-						 					console.log("Earlier hashmap is "+array);
+						 					console.re.log("Key is "+key + "  eid is "+eid);
+						 					console.re.log("Earlier hashmap is "+array);
 
 						 					if (array != null) {
 						 						var index = array.indexOf(eid);
 						 						if (index != -1) {
 						 							array.splice(index , 1);
-							 						console.log("Spliced "+index)
+							 						console.re.log("Spliced "+index)
 	
 						 						}
 						 						
 						 					}
 
 						 					hashmap[key] = array;
-										//	console.log("Now hashmap is "+array);
+										//	console.re.log("Now hashmap is "+array);
 
 						 			}
 
@@ -166,8 +167,8 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 
 
-					console.log("***** DONE *****");
-				//	console.log("Now the hashmap is "+JSON.stringify(hashmap));
+					console.re.log("***** DONE *****");
+				//	console.re.log("Now the hashmap is "+JSON.stringify(hashmap));
 					updateFreeFacHashmap(hashmap );
 
 
@@ -192,34 +193,34 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						for (var j = 0; j < tokens.length; j++) {
 					
 								//var t = days[i]+tokens[j];
-								//console.log(t);
+								//console.re.log(t);
 								hashmap[days[i]+tokens[j]] = arrOfEID;
 
 						}
 						
 					}
 
-					console.log("HashMap is "+JSON.stringify(hashmap));
+					console.re.log("HashMap is "+JSON.stringify(hashmap));
 					loadHashMap();
 				/*	var j = "Tuesday9.00";
 					
 
 					var k = "Monday8.00";
 					 var key = clone(hashmap,k);
-					 console.log(key);
+					 console.re.log(key);
 					//hashmap[k] = "hey";
-					console.log(key);
+					console.re.log(key);
 					key.splice(0,1);
-					console.log("Key after splice is "+key);
+					console.re.log("Key after splice is "+key);
 					hashmap[k] = key;
-					console.log("hashmap after splice is "+JSON.stringify(hashmap));
+					console.re.log("hashmap after splice is "+JSON.stringify(hashmap));
 			
 					
 				
 				
 					key = hashmap[j];
-					console.log(key);
-//					console.log(hashmap[j]);*/
+					console.re.log(key);
+//					console.re.log(hashmap[j]);*/
 				
 
 
@@ -245,7 +246,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						arrOfEID.push(fac._id);
 					}
 
-					console.log("EID fetching done !");
+					console.re.log("EID fetching done !");
 					initializeFacs();
 				}
 

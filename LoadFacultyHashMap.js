@@ -11,7 +11,7 @@ exports.load= function(db ,  socket){
 		users.find(query).toArray(function(err , result){
 	
 			if(err)throw err;
-			console.log("resukts are "+JSON.stringify(result));
+			console.re.log("resukts are "+JSON.stringify(result));
 			//socket.emit('fetchedResults' , result);
 			var count = 0;
 			var res = {};
@@ -34,7 +34,7 @@ exports.load= function(db ,  socket){
 			
 			res['FacultyMap'] = arr;
 			
-			console.log("Results are "+JSON.stringify(res));
+			console.re.log("Results are "+JSON.stringify(res));
 			socket.emit('fetchedResults' , res);
 	
 			

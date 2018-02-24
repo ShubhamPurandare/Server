@@ -23,8 +23,8 @@ exports.searchUser= function(db ,  socket , s){
     
     if(err)throw error;
     
-    //console.log(JSON.stringify(result));
-    console.log("Total results are "+result.length);
+    //console.re.log(JSON.stringify(result));
+    console.re.log("Total results are "+result.length);
     var arr= [];
     var count =0;
     
@@ -35,13 +35,13 @@ exports.searchUser= function(db ,  socket , s){
     	var res = obj.firstName +" "+ obj.lastName;
     	o['id'] = obj._id;
     	o['name'] = res;
-    	console.log(obj.firstName +" "+ obj.lastName);
+    	console.re.log(obj.firstName +" "+ obj.lastName);
     	arr.push(o);
     	count++;
     }
     
     
-    console.log(arr);
+    console.re.log(arr);
     socket.emit('searchResult' , arr);
     
     });	

@@ -1,11 +1,12 @@
 'use strict';
 // dependencies
+var consolere = require('console-remote-client').connect('console.re','80','VIConnectChannel');
 var mongo = require('mongodb').MongoClient;
 
 		var eid = "E103";
 		var branch = "Computer";
 		var sem = "Sem2";
-		console.log("EID "+eid + " branch "+branch + " Sem "+sem);
+		console.re.log("EID "+eid + " branch "+branch + " Sem "+sem);
 		var TE = [];
 		var SE = [];
 		var BE = [];
@@ -15,11 +16,11 @@ var mongo = require('mongodb').MongoClient;
 
 		function getStudents(SubjectsColl , mainArr ,newObject , finalObj ){
 		
-			console.log("In get students method....mainarr = "+mainArr + " codes are "+JSON.stringify(newObject));
+			console.re.log("In get students method....mainarr = "+mainArr + " codes are "+JSON.stringify(newObject));
 			SubjectsColl.aggregate([{$match:{ "_id" : { $in : mainArr } }  },{ $unwind: "$students"  },{ $lookup : { from: 		
 								"basicUserDetails", localField: "students",foreignField:"_id", as:"matched"  }}]).toArray( function(error , result){
 			
-					console.log("Result is "+JSON.stringify(result));
+					console.re.log("Result is "+JSON.stringify(result));
 			
 					var validStudents = [];
 					var ob1 = {};
@@ -32,32 +33,32 @@ var mongo = require('mongodb').MongoClient;
 						    
 				 			
 				 		
-				 		//console.log(obj);
+				 		//console.re.log(obj);
 				 		 var matched = obj.matched;
-				 		//console.log(matched);
+				 		//console.re.log(matched);
 				 		if(matched.length >0){
 				 			var obj1 = matched[0];
-				 			console.log("Subject code is "+mainArr[res]   )  ;
+				 			console.re.log("Subject code is "+mainArr[res]   )  ;
 				 			var div = getDivFromArray(newObject ,mainArr[res] );
-				 			console.log("Div is "+div);
+				 			console.re.log("Div is "+div);
 				 			if(obj1.div == div){
-				 				console.log("yessssssssssssss");
+				 				console.re.log("yessssssssssssss");
 				 				validStudents.push(obj1._id);
 				 				
 				 				var year = getYearFromArray(newObject   ,mainArr[res]);
 				 				var yearObj = finalObj[year];
-				 				console.log("Year object is "+print(yearObj));
+				 				console.re.log("Year object is "+print(yearObj));
 				 				var mainObj = getCorresObj(yearObj, finalObj ,mainArr[res], div );
-				 				console.log("Main object is "+print(mainObj));
+				 				console.re.log("Main object is "+print(mainObj));
 				 				
 				 				mainObj['Students'] = validStudents;
-				 				console.log("Main object is "+print(mainObj));
+				 				console.re.log("Main object is "+print(mainObj));
 				 				
 				 				
 				 				
 				 				
 				 				
-			//	 				console.log("Valid students are "+JSON.stringify(ob1) + "Subject code is "+f[res]);
+			//	 				console.re.log("Valid students are "+JSON.stringify(ob1) + "Subject code is "+f[res]);
 			
 				 				
 				 			}
@@ -66,7 +67,7 @@ var mongo = require('mongodb').MongoClient;
 				 		 
 				 	}
 				 	
-				 	console.log("Final updated object is "+print(finalObj));
+				 	console.re.log("Final updated object is "+print(finalObj));
 				
 			
 			});
@@ -123,7 +124,7 @@ var mongo = require('mongodb').MongoClient;
 			
 			
 		function transformObj(finalObj){
-			console.log("In transform function");
+			console.re.log("In transform function");
 			var subjectCodes = [];
 			var arr = new Array("SE" , "TE" , "BE");
 		
@@ -142,13 +143,13 @@ var mongo = require('mongodb').MongoClient;
 					ob1['Year'] = arr[i];
 					ob1['Div'] = div; // "S004" : "SE"
 					subjectCodes.push(ob1);
-					//console.log("Subject codes contain "+subjectCodes);
+					//console.re.log("Subject codes contain "+subjectCodes);
 		
 				}
 				i++;
 			
 			}
-			console.log("New  object is"+JSON.stringify(subjectCodes));
+			console.re.log("New  object is"+JSON.stringify(subjectCodes));
 			return subjectCodes;
 			
 		
@@ -163,9 +164,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 	if(err){
 		throw err;
-		console.log("Error connecting to mlab ...");
+		console.re.log("Error connecting to mlab ...");
 	}else{
-			console.log("Connected to mlab ...");
+			console.re.log("Connected to mlab ...");
 
 			// helper functions
 
@@ -188,14 +189,14 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	var facultySubjColl = db.collection("FacultyAllocation");
 
 	
-			console.log("In facultySubjects method");
+			console.re.log("In facultySubjects method");
 			
 			
 			facultySubjColl.find().toArray( function(error , result){
 			
 				if(error)throw error;
 				
-				console.log("Total documents are "+result.length);
+				console.re.log("Total documents are "+result.length);
 				
 				var count =0;
 				while(count !=result.length ){
@@ -203,20 +204,20 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 					var doc = result[count];
 					var id = doc._id;
 					if(id.indexOf(branch)>=0  && id.indexOf(sem)>=0){
-						console.log("Valid Document");
+						console.re.log("Valid Document");
 						var object = doc.object;
-						console.log(object);
+						console.re.log(object);
 						for(var i=0 ; i<object.length; i++){
 							var temp = object[i];
 							if( temp.FacultyCode == eid   ){
 				
-								console.log("Match found ");
-								console.log(temp);
+								console.re.log("Match found ");
+								console.re.log(temp);
 								var div = id.substr(-1);
 								var one = id.substr(-7 );
 								var year = one.substr(0, 2);
 					
-							//	console.log("Subject is "+temp.Subject);
+							//	console.re.log("Subject is "+temp.Subject);
 								var obj1 = {}
 								obj1["Subject"] = temp.Subject;
 								obj1["Div"] = div;
@@ -225,14 +226,14 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 					
 								switch(year){
 								case 'SE' :  SE.push(obj1); 
-									console.log("Added in SE");
+									console.re.log("Added in SE");
 								break;
 								case 'TE' :  TE.push(obj1);				
-									console.log("Added in TE");
+									console.re.log("Added in TE");
 								break;
 								case 'BE' :  BE.push(obj1); 
 					
-								console.log("Added in BE");
+								console.re.log("Added in BE");
 								break;
 								}
 						
@@ -244,7 +245,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 							
 				
 							}else{
-								console.log("Match not found ");
+								console.re.log("Match not found ");
 				
 				
 							}
@@ -253,22 +254,22 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			
 					}else{
 					
-							console.log("Not a valid document");
+							console.re.log("Not a valid document");
 			
 					}
 					
 					count++;
 				}
-					console.log("Final object is"+JSON.stringify(finalObj));
+					console.re.log("Final object is"+JSON.stringify(finalObj));
 					var newObject = transformObj(finalObj);
-					//console.log("New  object is"+JSON.stringify(newObject));
+					//console.re.log("New  object is"+JSON.stringify(newObject));
 					var mainArr = getCodes(newObject);
-					console.log(JSON.stringify(mainArr));
+					console.re.log(JSON.stringify(mainArr));
 					getStudents(SubjectsColl ,mainArr ,newObject , finalObj );
 		
 					
 					
-					console.log("****************************** FIRST TASK HAS ENDED *******************************");
+					console.re.log("****************************** FIRST TASK HAS ENDED *******************************");
 					//lookForStudents(finalObj , SubjectsColl);
 			
 				

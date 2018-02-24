@@ -1,7 +1,7 @@
 exports.get= function(jsonObj , socket , db , fs){
 
 	function base64_encode(file) {
-		console.log("Req file is "+file);
+		console.re.log("Req file is "+file);
 		if (fs.existsSync(file)) {
 			// file exists
 			// read binary data
@@ -15,11 +15,11 @@ exports.get= function(jsonObj , socket , db , fs){
 
 	var encodedImage = base64_encode(jsonObj);
 	if (encodedImage != null) {
-		console.log("File found");
+		console.re.log("File found");
 		socket.emit("getFileResults" , encodedImage);
 	
 	}else{
-		console.log("File not found");
+		console.re.log("File not found");
 		socket.emit("getFileResults" , "0");
 		
 	}

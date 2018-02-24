@@ -1,6 +1,6 @@
 
 var mongo = require('mongodb').MongoClient;
-
+var consolere = require('console-remote-client').connect('console.re','80','VIConnectChannel');
 
 		
 
@@ -8,9 +8,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 	if(err){
 		throw err;
-		console.log("Error connecting to mlab ...");
+		console.re.log("Error connecting to mlab ...");
 	}else{
-			console.log("Connected to mlab ...");
+			console.re.log("Connected to mlab ...");
 
 var coll = db.collection("basicUserDetails");
 
@@ -35,7 +35,7 @@ coll.aggregate(
 		
 			if(err)throw err;
 			
-			console.log(JSON.stringify(result));
+			console.re.log(JSON.stringify(result));
 			
 			
 			
@@ -74,7 +74,7 @@ coll.aggregate(
 		
 			if(err)throw err;
 			
-			console.log(JSON.stringify(result));
+			console.re.log(JSON.stringify(result));
 			
 			
 			

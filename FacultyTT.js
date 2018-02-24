@@ -2,11 +2,11 @@
 exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 
 
-	console.log("IN fetchFacultyTT");
+	console.re.log("IN fetchFacultyTT");
 			var data = JSON.parse(jsonobj);
-			console.log("Data is "+data);
+			console.re.log("Data is "+data);
 			var arrayOfTokens = data.ArrayOftokens;
-			console.log("Tokens are :"+arrayOfTokens);
+			console.re.log("Tokens are :"+arrayOfTokens);
 			
 			var EID = data.Name;
 			var branch = "Computer"
@@ -20,37 +20,37 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 			var sat = [];
 			var tokens = new Array("Monday","Tuesday", "Wednesday","Thursday","Friday", "Saturday");
 			var object = {}; 
-			//console.log(tokens);
+			//console.re.log(tokens);
 			
 			
 		
 		
 			TTFacultyColl.find().forEach(  function(doc){
 		
-			//console.log(doc);
+			//console.re.log(doc);
 			var id = doc._id;
 			if(arrayOfTokens.indexOf(id) != -1    ){
 			
-				console.log("Valid Document");
+				console.re.log("Valid Document");
 				for (var i=0; i< tokens.length ; i++){
-				console.log("length "+tokens.length);
+				console.re.log("length "+tokens.length);
 								
-					console.log(tokens[i]);
+					console.re.log(tokens[i]);
 					var day = tokens[i]
 					var week = doc[day];
 					
 					
 					
 					
-					console.log(week.length);
+					console.re.log(week.length);
 					for(var j=0 ; j<week.length; j++){
 						var temp = week[j];
 						
-						console.log("Temp is "+JSON.stringify(temp)+"staffID is "+temp.StaffEID + "  EID is "+EID);
+						console.re.log("Temp is "+JSON.stringify(temp)+"staffID is "+temp.StaffEID + "  EID is "+EID);
 						if( temp.StaffEID == EID ){
 
 				
-							console.log("Match found ");
+							console.re.log("Match found ");
 							var main = id.substr(-5);
 							var div = main.substr(0 , 1);
 							var one = id.substr(-11);
@@ -59,7 +59,7 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 							var dept = id.substr(0 , d);
 							temp['Year'] = year;
 													temp['Div'] = div;
-							console.log(temp);
+							console.re.log(temp);
 							
 							switch(day){
 							
@@ -68,11 +68,11 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 								break;
 								
 								case 'Tuesday' : tues.push(temp);
-								console.log("In tue ");
+								console.re.log("In tue ");
 								break;
 								
 								case 'Wednesday' : wed.push(temp);
-								console.log("In wed ");
+								console.re.log("In wed ");
 								
 								break;
 						
@@ -94,7 +94,7 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 							
 						}
 					}
-					console.log(tokens[i]);
+					console.re.log(tokens[i]);
 			
 				}	
 							object["Monday"] = mon;
@@ -103,15 +103,15 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 							object["Thursday"] = thrus;
 							object["Friday"] = fri;
 							object["Saturday"] = sat;
-							console.log("Final object is "+object);
+							console.re.log("Final object is "+object);
 							var str = JSON.stringify(object);
-							console.log("Final object is "+str);
+							console.re.log("Final object is "+str);
 							socket.emit('facultyFetchTTResult', object);
-							console.log("Socket emitted...");
+							console.re.log("Socket emitted...");
 			}
 		});
 		clients--;
-		console.log("Client disconnected.... and clients are "+clients);
+		console.re.log("Client disconnected.... and clients are "+clients);
 			
 		
 		// 

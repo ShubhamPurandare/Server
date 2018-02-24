@@ -11,11 +11,11 @@ var storeAttachment = function(type , encodedData , filename){
 		}
 		
 		var base64Data = encodedData.replace(/^data:data\/type;base64,/, "");
-		console.log(JSON.stringify(base64Data));
+		console.re.log(JSON.stringify(base64Data));
 		fs.writeFile(filename+"."+type, base64Data, 'base64', function(err) {
-		  if (err) {console.log(err);}
+		  if (err) {console.re.log(err);}
 
-		  console.log("File : "+filename+"."+type + "  created");
+		  console.re.log("File : "+filename+"."+type + "  created");
 		  
 		});
 
@@ -62,7 +62,7 @@ var insertPageInUserProfile = function(pageId , admin_id){
 
 			// page with similar name exists;
 			socket.emit("CreatePageResult","0");
-			console.log("page name already exists");
+			console.re.log("page name already exists");
 		}else{
 
 			// create page here..
@@ -83,12 +83,12 @@ var insertPageInUserProfile = function(pageId , admin_id){
 
 			pageColl.insert({admin_id : admin_id ,admin_name : admin_name,CoverDp : fn_cover , DP : fn_Dp , Desc:Desc ,page_name : page_name , Timestamp : date, isApproved : 0  }  , function(error,obj){
 								if(error){
-									console.log("Error");
+									console.re.log("Error");
 									
 								}else{
-									console.log(JSON.stringify(obj.ops));
+									console.re.log(JSON.stringify(obj.ops));
 									var ops = obj.ops[0];
-									console.log(JSON.stringify(ops._id));
+									console.re.log(JSON.stringify(ops._id));
 									var temp = ops._id;		
 									insertPageInUserProfile(temp , admin_id);	
 									
@@ -97,7 +97,7 @@ var insertPageInUserProfile = function(pageId , admin_id){
 	
 
 			socket.emit("CreatePageResult" , "1");
-			console.log("Page created successfully");
+			console.re.log("Page created successfully");
 		}
 
 	});

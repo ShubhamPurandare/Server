@@ -1,5 +1,6 @@
 
 const assert = require("assert");
+var consolere = require('console-remote-client').connect('console.re','80','VIConnectChannel');
 
 var i = {
 
@@ -24,6 +25,6 @@ try{
  assert.deepEqual(i , j , "yes") ;
  }catch( e){
  
- console.log("ERROR");
+ console.re.log("ERROR");
  
  }

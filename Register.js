@@ -19,9 +19,9 @@ exports.register = function(clients, user, socket , users , basicUserDetails){
 
 
 
-	console.log("In register method");
+	console.re.log("In register method");
 			var jsonobj = JSON.parse(user); //convert into json obj
-			console.log("json string is "+jsonobj);
+			console.re.log("json string is "+jsonobj);
 			var authComplete = 0;
 			var username = jsonobj.username;
 			var email = jsonobj.email;
@@ -35,7 +35,7 @@ exports.register = function(clients, user, socket , users , basicUserDetails){
 			var discipline = jsonobj.Discipline;
 			var program = jsonobj.Program;
 			
-			console.log("name is "+firstName + " lastname is "+lastName);
+			console.re.log("name is "+firstName + " lastname is "+lastName);
 			
 
 
@@ -45,13 +45,13 @@ exports.register = function(clients, user, socket , users , basicUserDetails){
 						 		year : year, firstName :firstName, lastName:lastName  }
 						 		 , function(error){
 								if(error){
-									console.log("Error in registeration");
+									console.re.log("Error in registeration");
 									
 		
 								}else{
 									var fullName = firstName+" "+lastName;
 									//sendResgistrationEmail(fullName, email);
-									console.log("Inserted in BUD successfully.. ");
+									console.re.log("Inserted in BUD successfully.. ");
 									//sendResgistrationEmail(fullName, email);
 			
 									
@@ -66,23 +66,23 @@ exports.register = function(clients, user, socket , users , basicUserDetails){
 						throw error;
 					}else{
 						if(data.length == 1){
-							console.log("Username exists  : "+username );
+							console.re.log("Username exists  : "+username );
 							
 							if(data._id == grNumber  ){
 								// same user is registering again
-								console.log(" same user is registering again  : "+username );
+								console.re.log(" same user is registering again  : "+username );
 								authComplete=3;
 								socket.emit('registerResult' , authComplete);
-								console.log("Emmiting socket");
+								console.re.log("Emmiting socket");
 			
 							
 							}else{
 							
 								// this username already exists.
 								authComplete=2;	
-									console.log(" try diff username  : "+username );
+									console.re.log(" try diff username  : "+username );
 									socket.emit('registerResult' , authComplete);
-									console.log("Emmiting socket");
+									console.re.log("Emmiting socket");
 			
 							
 							}
@@ -100,19 +100,19 @@ exports.register = function(clients, user, socket , users , basicUserDetails){
 						 		year : year, firstName :firstName, lastName:lastName , faculty:faculty ,discipline:discipline , program:program }
 						 		 , function(error){
 								if(error){
-									console.log("Error in registeration");
+									console.re.log("Error in registeration");
 									authComplete=0;
 									socket.emit('registerResult' , authComplete);
-									console.log("Emmiting socket");
+									console.re.log("Emmiting socket");
 			
 		
 								}else{
 									var fullName = firstName+" "+lastName;
 									//sendResgistrationEmail(fullName, email);
-									console.log("Inserted in database successfully.. ");
+									console.re.log("Inserted in database successfully.. ");
 									authComplete = 1;
 									socket.emit('registerResult' , authComplete);
-									console.log("Emmiting socket");
+									console.re.log("Emmiting socket");
 
 									addEntryInBUD();
 									//sendResgistrationEmail(fullName, email);
@@ -140,7 +140,7 @@ exports.register = function(clients, user, socket , users , basicUserDetails){
 				
 				socket.on('Ping' , function(data, callback){
 				
-				console.log("Pinged!!!");
+				console.re.log("Pinged!!!");
 					var callback = callback || function(){};
 					callback(true);
 				
@@ -174,9 +174,9 @@ var mailOptions = {
 
 transporter.sendMail(mailOptions, function(error, info){
   if (error) {
-    console.log(error);
+    console.re.log(error);
   } else {
-    console.log('Email sent: ' + info.response);
+    console.re.log('Email sent: ' + info.response);
   }
 }); 
 }*/

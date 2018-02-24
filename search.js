@@ -15,7 +15,7 @@ exports.searchFun= function( key, socket , db){
 			
 			}else{
 			
-				console.log("No user found");
+				console.re.log("No user found");
 			}
 		
 		});

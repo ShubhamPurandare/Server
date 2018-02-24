@@ -15,13 +15,13 @@ function base64_encode(file) {
 }
 
 var filename = jsonObj.filename;
-console.log(JSON.stringify(filename));
+console.re.log(JSON.stringify(filename));
 var encodedData = base64_encode(filename);
 
 	var obj = {};
 	obj['filename' ] = filename;
 	obj['encodedData'] = encodedData;
-	console.log(JSON.stringify(obj));
+	console.re.log(JSON.stringify(obj));
 
 	socket.emit('AttachmentsResults' , obj);
 

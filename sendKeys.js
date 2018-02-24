@@ -7,7 +7,7 @@ exports.sendkeys = function (socket ,clients , db , collName ){
 	 
 	 	if(err)throw err;
 	 	
-	 	console.log("Coll name is "+collName);
+	 	console.re.log("Coll name is "+collName);
 	 	var obj = {};
 	 	var array = [];
 	 	var temp = Object.keys(data);
@@ -17,12 +17,12 @@ exports.sendkeys = function (socket ,clients , db , collName ){
 	 		
 	 	
 	 	}
-	 	console.log(array);
+	 	console.re.log(array);
 	 	obj['name'] = collName;
 	 	obj['keys'] = array;
 	 	socket.emit('keys' ,obj );
 	 	
-	 	console.log("Keys emmitted..."+Object.keys(data));
+	 	console.re.log("Keys emmitted..."+Object.keys(data));
 	 
 	 });
 	 		
