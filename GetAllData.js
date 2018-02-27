@@ -2,10 +2,14 @@
 exports.getAllData = function(clients ,fs, JsonData , db , socket , ObjectId){
 
 function base64_encode(file) {
-    // read binary data
-    var bitmap = fs.readFileSync(file);
-    // convert binary data to base64 encoded string
-    return new Buffer(bitmap).toString('base64');
+   if (fs.existsSync(file)) {
+			// file exists
+			// read binary data
+	 	   var bitmap = fs.readFileSync(file);
+	    	// convert binary data to base64 encoded string
+	    	return new Buffer(bitmap).toString('base64');
+		}
+		return null;
 }
 
 var updates = db.collection("MyUpdates");
@@ -17,7 +21,7 @@ var updates = db.collection("MyUpdates");
 			var grNumber = data.GrNumber;
 			var collectionName = data.collectionName;
 			var type = data.isDocByObjectID;
-			console.re.log("Type is "+type);
+			//console.re.log("Type is "+type);
 			var c = db.collection(collectionName); // takes the collection name and creates a collection variable
 			
 
@@ -100,7 +104,12 @@ var updates = db.collection("MyUpdates");
 						// get the encoded image from storage
 						var filename= obj.DP;
 						var encodedImage = base64_encode(filename); 
-						obj['DP'] = encodedImage;
+						if (encodedImage == null) {
+							obj['DP'] = "0";
+						}else{
+							obj['DP'] = encodedImage;
+						}
+						
 					}
 						
 				
@@ -145,7 +154,13 @@ var updates = db.collection("MyUpdates");
 						// get the encoded image from storage
 						var filename= obj.Display_picture;
 						var encodedImage = base64_encode(filename+".jpg"); 
-						obj['Display_picture'] = encodedImage;
+						if (encodedImage == null) {
+							obj['Display_picture'] = "0";
+						}else{
+							obj['Display_picture'] = encodedImage;
+					
+						}
+						
 					}
 					
 				
