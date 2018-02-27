@@ -218,7 +218,7 @@ var coll2 = db.collection("MyUpdates");
 		var obj = {};
 		obj['DOC'] = fn;
 		attachments.push(obj);
-		storeAttachment("doc" , encodedDoc, filename);
+		storeAttachment("docx" , encodedDoc, filename);
 	}
 
 
