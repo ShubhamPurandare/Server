@@ -40,7 +40,7 @@ var getUserProfile = function(id){
 						if (obj.Display_picture != null) {
 						// get the encoded image from storage
 						var filename= obj.Display_picture;
-						var encodedImage = base64_encode(filename); 
+						var encodedImage = base64_encode(filename+".jpg"); 
 						if (encodedImage == null) {
 								console.re.log("couldnot find dp");
 							
