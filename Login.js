@@ -1,6 +1,6 @@
 
 
-exports.login= function(clients, user ,users , socket , basicUserDetails){
+exports.login= function(clients, user ,users , socket , basicUserDetails, fs){
 
 	var jsonobj = JSON.parse(user);
 				var isAuth = 0;

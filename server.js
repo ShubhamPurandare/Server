@@ -460,7 +460,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		
 		socket.on('login' ,function(user){
 				
-				loginModule.login(clients , user ,users , socket , basicUserDetails);
+				loginModule.login(clients , user ,users , socket , basicUserDetails, fs);
 			
 		}); // end of login.
 		
