@@ -22,6 +22,8 @@ function base64_encode(file) {
 
 var getUserProfile = function(id){
 
+	console.re.log("In get profile");
+							
 	basicUserDetails.find(
 			{
 				_id : id
@@ -31,6 +33,8 @@ var getUserProfile = function(id){
 			if (err) {throw err;}
 
 			if (res.length !=0 ) {  // get user dp
+					console.re.log("User found");
+							
 
 						var obj = res[0];
 						if (obj.Display_picture != null) {
@@ -38,6 +42,8 @@ var getUserProfile = function(id){
 						var filename= obj.Display_picture;
 						var encodedImage = base64_encode(filename); 
 						if (encodedImage == null) {
+								console.re.log("couldnot find dp");
+							
 							obj['Display_picture'] = "0";
 						}else{
 							obj['Display_picture'] = encodedImage;
@@ -49,6 +55,8 @@ var getUserProfile = function(id){
 					}
 
 					console.re.log("Emitting socket now ...");
+						console.re.log("Profile is "+JSON.stringify(obj));
+							
 					socket.emit('JSON', obj);
 
 			}else{
@@ -107,6 +115,7 @@ var getUserProfile = function(id){
 						}
 						socket.emit('loginResult' , isAuth );
 						if(isAuth == 1){
+								console.re.log("Getting profile info");
 								getUserProfile(resObject._id);
 							
 						}
