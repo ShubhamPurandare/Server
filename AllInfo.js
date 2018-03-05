@@ -30,7 +30,6 @@ console.re.log("In Allinfo listener...");
 		var c = db.collection(collectionName); // takes the collection name and creates a collection variable
 
 		
-	//	console.re.log("data extracted is "+ object + " "+ contents + " "+length + " "+grNumber + " "+collectionName);
 		var infoObj = JSON.parse(info);		
 		console.re.log(infoObj);  // correctly parsed		
 		var finalArray = new Array();
@@ -43,6 +42,30 @@ console.re.log("In Allinfo listener...");
 			var filename ="./Media/UserDP/"+ grNumber+"dp";
 			storeAttachment("jpg" , encodedImage , filename);
 			infoObj['Display_picture'] = filename;
+			console.re.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
+			
+
+		}
+
+		if (infoObj.tenththCertificate != null) {
+
+			var encodedImage = infoObj.tenththCertificate;
+			// its a request for setting dp
+			var filename ="./Media/Certificates/"+ grNumber+"tenththCertificate";
+			storeAttachment("jpg" , encodedImage , filename);
+			infoObj['tenththCertificate'] = filename;
+			console.re.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
+			
+
+		}
+
+		if (infoObj.twelveththCertificate != null) {
+
+			var encodedImage = infoObj.twelveththCertificate;
+			// its a request for setting dp
+			var filename ="./Media/Certificates/"+ grNumber+"twelveththCertificate";
+			storeAttachment("jpg" , encodedImage , filename);
+			infoObj['twelveththCertificate'] = filename;
 			console.re.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
 			
 

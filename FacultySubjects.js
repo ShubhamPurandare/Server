@@ -9,10 +9,12 @@ var SubjectsColl = db.collection("Subjects");
 
 console.re.log("In facultySubjects method");
 			var data = JSON.parse(jsonobj); //convert into json obj
+			console.log("data is "+JSON.stringify(data));
 			var eid = data.EID;
 			var branch = data.Branch;
 			var sem = data.Sem;
-			console.re.log("EID "+eid + " branch "+branch + " Sem "+sem);
+			var cr = data.CurrentYear;
+			console.re.log("EID "+eid + " branch "+branch + " Sem "+sem + "CurrentYear is "+cr);
 			var TE = [];
 			var SE = [];
 			var BE = [];
@@ -22,7 +24,7 @@ console.re.log("In facultySubjects method");
 	
 				//console.re.log(doc._id);
 				var id = doc._id;
-				if(id.indexOf(branch)>=0  && id.indexOf(sem)>=0){
+				if(id.indexOf(branch)>=0  && id.indexOf(sem)>=0  && id.indexOf(cr)>=0){
 					console.re.log("Valid Document");
 					var object = doc.object;
 					//console.re.log(object);

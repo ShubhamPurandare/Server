@@ -1,12 +1,65 @@
 
 
-exports.login= function(clients, user ,users , socket){
+exports.login= function(clients, user ,users , socket , basicUserDetails){
 
 	var jsonobj = JSON.parse(user);
 				var isAuth = 0;
 				var username = jsonobj.username;
 				var password = jsonobj.password; 
 				
+
+
+function base64_encode(file) {
+   if (fs.existsSync(file)) {
+			// file exists
+			// read binary data
+	 	   var bitmap = fs.readFileSync(file);
+	    	// convert binary data to base64 encoded string
+	    	return new Buffer(bitmap).toString('base64');
+		}
+		return null;
+}
+
+var getUserProfile = function(id){
+
+	basicUserDetails.find(
+			{
+				_id : id
+			}
+		).toArray(function(err , res){
+
+			if (err) {throw err;}
+
+			if (res.length !=0 ) {  // get user dp
+
+						var obj = res[0];
+						if (obj.Display_picture != null) {
+						// get the encoded image from storage
+						var filename= obj.Display_picture;
+						var encodedImage = base64_encode(filename); 
+						if (encodedImage == null) {
+							obj['Display_picture'] = "0";
+						}else{
+							obj['Display_picture'] = encodedImage;
+							console.re.log("DP found and loaded");
+						}
+						
+					}else{
+						obj['Display_picture'] = "0";
+					}
+
+					console.re.log("Emitting socket now ...");
+					socket.emit('JSON', obj);
+
+			}else{
+				console.re.log("User profile not found");
+			}
+
+
+	});
+
+}
+
 				console.re.log("json string is "+jsonobj);
 				// check if user exists
 				console.re.log("logged in user is "+username + " Password "+password);
@@ -45,6 +98,8 @@ exports.login= function(clients, user ,users , socket){
 							
 							
 							isAuth = 1;
+							var resObject = result[0];
+						
 						}else{ // user doesnot exists 
 							console.re.log("No corresponding account found , please signup first");
 							isAuth = 0;
@@ -52,8 +107,8 @@ exports.login= function(clients, user ,users , socket){
 						}
 						socket.emit('loginResult' , isAuth );
 						if(isAuth == 1){
-							console.re.log("Emitting socket now ...");
-							socket.emit('JSON', result);
+								getUserProfile(resObject._id);
+							
 						}
 					
 					}

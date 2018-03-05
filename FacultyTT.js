@@ -39,26 +39,34 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 					var day = tokens[i]
 					var week = doc[day];
 					
-					
-					
-					
-					console.re.log(week.length);
-					for(var j=0 ; j<week.length; j++){
-						var temp = week[j];
-						
-						console.re.log("Temp is "+JSON.stringify(temp)+"staffID is "+temp.StaffEID + "  EID is "+EID);
-						if( temp.StaffEID == EID ){
-
-				
-							console.re.log("Match found ");
-							var main = id.substr(-5);
+					var main = id.substr(-5);
 							var div = main.substr(0 , 1);
 							var one = id.substr(-11);
 							var year = one.substr(0,2);
 							var d = id.length -11;
 							var dept = id.substr(0 , d);
+						
+					
+					console.re.log(week.length);
+					for(var j=0 ; j<week.length; j++){
+						var temp = week[j]; // temp is the actual tt object
 							temp['Year'] = year;
-													temp['Div'] = div;
+
+
+
+							
+
+
+
+							
+				
+						if (temp.Type == null || temp.Type == "L") {// lecture slot
+
+						if( temp.StaffEID == EID ){
+
+							
+							console.re.log("Match found ");
+							temp['Div'] = div;
 							console.re.log(temp);
 							
 							switch(day){
@@ -93,6 +101,69 @@ exports.facultyTT = function(clients, socket , db , jsonobj , TTFacultyColl){
 							
 							
 						}
+
+							
+
+					}if (temp.Type != null && temp.Type == "P"){ //practical slot
+
+						var batches = temp.Batches;
+						for (var i = 0 ;  i < batches.length ; i++) {
+
+						 	var batch = batches[i];
+
+						 		if( batch.StaffEID == EID ){
+
+						 			batch['Year'] = year;
+
+						 			console.re.log("Match found ");
+									batch['Div'] = batch.Batch;
+									console.re.log(temp);
+							
+							switch(day){
+							
+							
+								case 'Monday' : mon.push(batch);
+								break;
+								
+								case 'Tuesday' : tues.push(batch);
+								console.re.log("In tue ");
+								break;
+								
+								case 'Wednesday' : wed.push(batch);
+								console.re.log("In wed ");
+								
+								break;
+						
+								case 'Thursday' : thrus.push(batch);
+								break;
+								
+								case 'Friday' : fri.push(batch);
+								break;
+								
+								case 'Saturday' : sat.push(batch);
+								break;
+								
+							}
+
+
+						 		}
+
+
+						 } 
+
+
+
+					}else{ // slot where type is not mentioned
+
+
+
+
+
+							}
+
+				
+						console.re.log("Temp is "+JSON.stringify(temp)+"staffID is "+temp.StaffEID + "  EID is "+EID);
+						
 					}
 					console.re.log(tokens[i]);
 			
