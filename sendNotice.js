@@ -44,9 +44,9 @@ var getPosts = function(socket , id,len){
 				if (obj.isImageAttached == 1) 
 				{
 					var imgPath = obj.Image;
-					var encodedImage = base64_encode(imgPath);
+					//var encodedImage = base64_encode(imgPath);
 					//console.re.log(encodedImage);
-					obj.Image = encodedImage;
+					//obj.Image = encodedImage;
 				}
 				notices.push(obj);
 			

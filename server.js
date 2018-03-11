@@ -4,6 +4,9 @@ var port     = process.env.PORT || 8083;
 var mongo = require('mongodb').MongoClient;
 var client = require('socket.io')();
 var clients = 0;
+var express = require('express')
+var app = express()
+
 var ObjectId = require('mongodb').ObjectId;
 
 var rooms = [];
@@ -490,6 +493,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
  
 		}); // end of socket.on
 
+
+
+
 // -----------------------------------------------------------------------------------------------------------------------------------------
 	});	
 
@@ -501,9 +507,13 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 
 
+//app.listen(8080);
+
+
+
 
 client.listen(port);
-console.re.re.log("Connected on port "+port);
+console.re.log("Connected on port "+port);
 
 //code ends
 

@@ -169,9 +169,9 @@ var coll2 = db.collection("MyUpdates");
 	var attachments = [];
 	if (isExcelAttached == 1 ) {
 		var encodedExcel = jsonObj.EXCEL;
-		var date = new Date();
+		var date = new Date().toISOString();
 		var f = sender_id+"excel"+date;
-		var fn_image = "./Media/PostMedia/"+sender_id+"excel"+date+".xls";
+		var fn_image = sender_id+"excel"+date+".xls";
 		var obj = {};
 		obj['Excel'] = fn_image;
 		attachments.push(obj);
@@ -180,10 +180,10 @@ var coll2 = db.collection("MyUpdates");
 	}
 	if (isImageAttached == 1) {
 		var encodedImage = jsonObj.Image;
-		var date = new Date();
+		var date = new Date().toISOString();
 		//var imgType = jsonObj.ImageType;
 		var f = sender_id+"image"+date;
-		var fn_image = "./Media/PostMedia/"+sender_id+"image"+date+".jpg";
+		var fn_image = sender_id+"image"+date+".jpg";
 		var obj = {};
 		obj['Image'] = fn_image;
 		attachments.push(obj);
@@ -191,7 +191,7 @@ var coll2 = db.collection("MyUpdates");
 	}
 	if (isPPTAttached == 1) {
 		var encodedPPT = jsonObj.PPT;
-		var date = new Date();
+		var date = new Date().toISOString();
 		var filename = sender_id+"ppt"+date;
 		var fn = "./Media/PostMedia/"+sender_id+"ppt"+date+".ppt";
 		var obj = {};
@@ -202,7 +202,7 @@ var coll2 = db.collection("MyUpdates");
 	}
 	if (isPDFAttached == 1) {
 		var encodedPDF = jsonObj.PDF;
-		var date = new Date();
+		var date = new Date().toISOString();
 		var filename = sender_id+"pdf"+date;
 		var fn = "./Media/PostMedia/"+sender_id+"pdf"+date+".pdf";
 		var obj = {};
@@ -212,7 +212,7 @@ var coll2 = db.collection("MyUpdates");
 	}
 	if (isDocAttached == 1) {
 		var encodedDoc = jsonObj.DOC;
-		var date = new Date();
+		var date = new Date().toISOString();
 		var filename = sender_id+"doc"+date;
 		var fn = "./Media/PostMedia/"+sender_id+"doc"+date+".docx";
 		var obj = {};
