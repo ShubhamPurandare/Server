@@ -150,7 +150,7 @@ var updates = db.collection("MyUpdates");
 				var obj= result[0];
 				if (collectionName == "basicUserDetails") {
 					
-					if (obj.Display_picture != null) {
+					/*if (obj.Display_picture != null) {
 						// get the encoded image from storage
 						var filename= obj.Display_picture;
 						var encodedImage = base64_encode(filename+".jpg"); 
@@ -161,7 +161,7 @@ var updates = db.collection("MyUpdates");
 					
 						}
 						
-					}
+					}*/
 					
 				
 				}
