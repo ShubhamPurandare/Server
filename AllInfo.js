@@ -39,7 +39,7 @@ console.re.log("In Allinfo listener...");
 
 			var encodedImage = infoObj.Display_picture;
 			// its a request for setting dp
-			var filename = "/Media/UserDP/"+grNumber+"dp";
+			var filename = "./Media/PostMedia/UserDP/"+grNumber+"dp";
 			var fn = grNumber+"dp";
 			storeAttachment("jpg" , encodedImage , filename);
 			infoObj['Display_picture'] = fn;
@@ -52,7 +52,7 @@ console.re.log("In Allinfo listener...");
 
 			var encodedImage = infoObj.tenththCertificate;
 			// its a request for setting dp
-			var filename ="./Media/Certificates/"+ grNumber+"tenththCertificate";
+			var filename ="./Media/PostMedia/Certificates/"+ grNumber+"tenththCertificate";
 			storeAttachment("jpg" , encodedImage , filename);
 			infoObj['tenththCertificate'] = filename;
 			console.re.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
@@ -64,7 +64,7 @@ console.re.log("In Allinfo listener...");
 
 			var encodedImage = infoObj.twelveththCertificate;
 			// its a request for setting dp
-			var filename ="./Media/Certificates/"+ grNumber+"twelveththCertificate";
+			var filename ="./Media/PostMedia/Certificates/"+ grNumber+"twelveththCertificate";
 			storeAttachment("jpg" , encodedImage , filename);
 			infoObj['twelveththCertificate'] = filename;
 			console.re.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));

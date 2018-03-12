@@ -193,7 +193,7 @@ var coll2 = db.collection("MyUpdates");
 	if (isPPTAttached == 1) {
 		var encodedPPT = jsonObj.PPT;
 		var date = new Date().toISOString();
-		var filename ="./Media/PostMedia/"+ sender_id+"ppt"+date;
+		var filename = sender_id+"ppt"+date;
 		var fn = "./Media/PostMedia/"+sender_id+"ppt"+date+".ppt";
 		var obj = {};
 		obj['PPT'] = fn;
@@ -204,7 +204,7 @@ var coll2 = db.collection("MyUpdates");
 	if (isPDFAttached == 1) {
 		var encodedPDF = jsonObj.PDF;
 		var date = new Date().toISOString();
-		var filename = "./Media/PostMedia/"+sender_id+"pdf"+date;
+		var filename = sender_id+"pdf"+date;
 		var fn = "./Media/PostMedia/"+sender_id+"pdf"+date+".pdf";
 		var obj = {};
 		obj['PDF'] = fn;
@@ -214,7 +214,7 @@ var coll2 = db.collection("MyUpdates");
 	if (isDocAttached == 1) {
 		var encodedDoc = jsonObj.DOC;
 		var date = new Date().toISOString();
-		var filename = "./Media/PostMedia/"+sender_id+"doc"+date;
+		var filename =sender_id+"doc"+date;
 		var fn = "./Media/PostMedia/"+sender_id+"doc"+date+".docx";
 		var obj = {};
 		obj['DOC'] = fn;
