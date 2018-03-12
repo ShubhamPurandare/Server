@@ -39,9 +39,10 @@ console.re.log("In Allinfo listener...");
 
 			var encodedImage = infoObj.Display_picture;
 			// its a request for setting dp
-			var filename = grNumber+"dp";
+			var filename = "/Media/UserDP/"+grNumber+"dp";
+			var fn = grNumber+"dp";
 			storeAttachment("jpg" , encodedImage , filename);
-			infoObj['Display_picture'] = filename;
+			infoObj['Display_picture'] = fn;
 			console.re.log("Image saved and now the infoObj is "+JSON.stringify(infoObj));
 			
 
