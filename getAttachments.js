@@ -16,7 +16,7 @@ function base64_encode(file) {
 
 var filename = jsonObj.filename;
 console.re.log(JSON.stringify(filename));
-var encodedData = base64_encode(filename);
+var encodedData = base64_encode("./Media/PostMedia/"+filename);
 
 	var obj = {};
 	obj['filename' ] = filename;
