@@ -39,19 +39,19 @@ var notices = [];
 
 var print = function(object)
 {
-	console.re.log(JSON.stringify(object));
+	console.log(JSON.stringify(object));
 }
 
 mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , database){
 
 	if(err){
 		throw err;
-		console.re.log("Error connecting to mlab ...");
+		console.log("Error connecting to mlab ...");
 	}else{
 		var db = database.db("viit");
 		
 
-		console.re.log("Connected to mlab ...");
+		console.log("Connected to mlab ...");
 		var collection = db.collection("Chat"); // create and define all collections here ..
 		var profile = db.collection("profile");
 		var users = db.collection("Users");
@@ -69,32 +69,32 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var SubjectsColl = db.collection("Subjects");
 		var noticeUpdate = db.collection("MyUpdates");
 		var postsCall = db.collection("Posts");
-		var myupdates = db.collection("MyUpdates");
 		var freeFacs = db.collection("FreeFacs");
-		var RescLogs = db.collection("RescLogs");
+		var AllLogs = db.collection("AllLogs");
+
 
 
 		var allFieldsString = ["personalDetails" , "academicDetails","basicUserDetails", "residentialInfo", "parentInfo"]
 		var allFields = [personalDetails, academicDetails, basicUserDetails, residentialInfo, parentInfo];
-		//console.re.log(allFieldsString);
+		//console.log(allFieldsString);
 		
 		
 		client.on('disconnect' , function(socket){
 			clients--;
-			console.re.log("Client disconnected.... number of clients is "+ clients);
+			console.log("Client disconnected.... number of clients is "+ clients);
 		});
 					
 
 		
 		client.on('connection' , function(socket ){
 		clients++;
-		console.re.log("Client "+clients+ " Connected.....");
+		console.log("Client "+clients+ " Connected.....");
 		
 		
 		
 		client.on('disconnect' , function(socket){
 			clients--;
-			console.re.log("Client disconnected.... number of clients is "+ clients);
+			console.log("Client disconnected.... number of clients is "+ clients);
 		});
 		
 
@@ -153,35 +153,41 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		getMatch.getData(clients , JsonData , db , socket);
 	});
 
+
+
+	
+
+	
 	socket.on('ValidateTTRescheduling' , function(jsonobj){
 	
-		console.re.log("Recieved object is "+jsonobj);
+		console.log("Recieved object is "+jsonobj);
 		var data = JSON.parse(jsonobj);
-		console.re.log("Data is "+data);
+		console.log("Data is "+data);
 		var code = data.code;
 		var object = data.requestObject;
-		console.re.log("Code is "+code);
+		console.log("Code is "+code);
 		var codeStr = [code];	
 		var tempArray = updates[codeStr];
-		
-		console.re.log("TempArray contains :"+JSON.stringify(tempArray));
+		noticeUpdate.update( {"_id" :code } , {$addToSet : { MyRescUpdates : object  } } ,function(err , result){if(err)throw err;} );
+
+		console.log("TempArray contains :"+JSON.stringify(tempArray));
 		if(tempArray != null){
-			console.re.log("Array not empty .. ");
+			console.log("Array not empty .. ");
 			tempArray.push(object);
 			updates[codeStr] = tempArray;
 		}else{
 		
-			console.re.log("Array empty .. creating the array");
+			console.log("Array empty .. creating the array");
 		
 			tempArray = [];
 			tempArray.push(object);
-			console.re.log("Code str is "+codeStr);
+			console.log("Code str is "+codeStr);
 			updates[codeStr] = tempArray;
 		
 		
 		}
 		
-		console.re.log(updates);
+		console.log(updates);
 			
 	
 	
@@ -190,13 +196,13 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	
 	socket.on('LookForUpdates' , function(jsonobj){
 	
-		console.re.log("Recieved object is "+jsonobj);
+		console.log("Recieved object is "+jsonobj);
 		var data = JSON.parse(jsonobj);
-		console.re.log("Data is "+data);
+		console.log("Data is "+data);
 		var code = data.Code;
-		console.re.log("Code is "+code);
+		console.log("Code is "+code);
 		var codeStr = [code];	
-	
+		
 		var objToSend = updates[codeStr];
 
 		if (code == "Admin") {
@@ -220,14 +226,15 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 					}
 
 					socket.emit('Adminupdates' , array);
-					console.re.log("data emmitted"+JSON.stringify(array));
+					console.log("data emmitted"+JSON.stringify(array));
 				}
 
 			}); 
 
 		}
 
-		myupdates.find({"_id":code}).toArray(function(err , res){
+		noticeUpdate.find({"_id":code}).toArray(function(err , res){
+		// this section will see if user has any tt updates
 
 			if (err) {throw err;}
 
@@ -243,29 +250,72 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 	
 		
-		sendNotice.send(code , socket , noticeUpdate , fs ,postsCall );
+		sendNotice.send(code , socket , noticeUpdate , fs ,postsCall ); // check if user has any new post update
 	
+
+		// see if user has any resc resc updates
+		noticeUpdate.find({"_id":code}).toArray(function(error,res){
+			if(error)
+			{
+				throw(error);
+			}
+			else
+			{
+				if (res.length !=0) {
+
+					var obj = res[0];
+					var arrayOfResc = obj.MyRescUpdates;
+					if (arrayOfResc != null && arrayOfResc.length != 0) {
+						var arrayOfRescToSend = [];
+						// the array consists of some updates
+						for (var i=0 ;i<=arrayOfResc.length - 1;  i++) {
+							var obj =	arrayOfResc[i];
+							if(   (obj.isViewed == 0  && obj.RequestType == "LecRescheduleRequest" )  ||  (obj.RequestType =="LecRescheduleResponse" ))
+							{
+								arrayOfRescToSend.push(obj);
+								if (obj.RequestType =="LecRescheduleResponse" ) {
+
+									noticeUpdate.update( {"_id" : code } , {$pull : { MyRescUpdates :{ id : obj.id  } }} );
+	
+									
+
+								}
+							}
+						}
+
+						socket.emit('updates',arrayOfRescToSend);
+
+
+					}else{
+
+						socket.emit('updates',"0" ); // no updates
+					}
+
+				}
+			}
+	});
+
 		if(objToSend != null){
 		
 			
-			console.re.log("Data found ...."+JSON.stringify(objToSend));
+			console.log("Data found ...."+JSON.stringify(objToSend));
 			socket.emit('updates',objToSend );
 			// remove the object from the array.
 			var array = updates[codeStr];
-			console.re.log("Initially ..."+JSON.stringify(array));
+			console.log("Initially ..."+JSON.stringify(array));
 			array = array.filter(function(el){ return el.RequestFacEID != code; });
 			if(array.length == 0){
-				console.re.log("array length 0");
+				console.log("array length 0");
 				delete updates[codeStr];
-				console.re.log("Now updates is "+JSON.stringify(updates));
+				console.log("Now updates is "+JSON.stringify(updates));
 			}else{
 				updates[codeStr] = array;
 			}
 			
-			console.re.log("Socket emmitted..");
+			console.log("Socket emmitted..");
 			// delete the object from array 
 		}else{
-			console.re.log("No Data found ....");
+			console.log("No Data found ....");
 			socket.emit('updates',"0" );
 		
 		}
@@ -275,9 +325,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	socket.on('RespondToReq' , function(data){
 	
 		var validUsers = [];
-		console.re.log("In RespondToReq");
+		console.log("In RespondToReq");
 		var json = JSON.parse(data);
-		console.re.log("Recieved object is "+JSON.stringify(json));
+		console.log("Recieved object is "+JSON.stringify(json));
 		var RescCode = json.RescFacEID;
 		// remove object of this code from updates array;
 		var reqCode = json.RequestFacEID;
@@ -285,13 +335,37 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var subjCode = json.SubjCode;
 		var div = json.Div;
 		var dept = json.branch;
+		console.re.log("Branch is "+dept);
+
+
+		var updateid = json.id;
+		noticeUpdate.update( {"_id" :RescCode } , {$pull : { MyRescUpdates :{ id : updateid  } }} ,function(err , result){if(err)throw err;} );
+		//noticeUpdate.update( {"_id" :RescCode } , {$addToSet : { MyRescUpdates : json  } } ,function(err , result){if(err)throw err;} );
+		noticeUpdate.update( {"_id" :reqCode } , {$addToSet : { MyRescUpdates : json  } } ,function(err , result){if(err)throw err;} );
+		
 
 		var isAccepted = json.isAccepted;
 		if(isAccepted == 1){
 			// request is accepted use the lookup query
 			// insert a log in resc logs
-			console.re.log("Request is accepted");
+			console.log("Request is accepted");
+			// store this response in log collection
 
+
+			AllLogs.find({_id : dept}).toArray(function(err, res){
+
+				if (err) {throw err;}
+
+				if (res.length == 0) {
+
+					AllLogs.insert({ _id : dept   });
+				}
+
+			AllLogs.update( {"_id" :dept } , {$addToSet : { RescLogs : json  } } ,function(err , result){if(err)throw err;} );
+		
+
+
+			});
 
 		/*	RescLogs.find(dept+"2018").toArray(function(err , res){
 
@@ -302,7 +376,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						// insert
 						RescLogs.insert({ _id :dept+"2018" });
 					}
-
+	
 					var tempobj = res[0];
 					var array = tempobj.log;
 					if(array==null)
@@ -320,33 +394,36 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 			SubjectsColl.aggregate([{$match:{ "_id" : subjCode }  },{ $unwind: "$students"  },{ $lookup : { from: 			"basicUserDetails", localField:"students",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
 			
-			console.re.log(result);
+			console.log(result);
 			
 			for(var i=0; i<result.length; i++){
 		 	
 		 		var obj = result[i];
-		 		//console.re.log(obj);
+		 		//console.log(obj);
 		 		 var matched = obj.matched;
-		 		console.re.log(matched);
+		 		console.log(matched);
 		 		if(matched.length >0){
 		 			var obj1 = matched[0];
 		 			if(obj1.div == div){
-		 				console.re.log("yessssssssssssss");
+		 				console.log("yessssssssssssss");
 		 				validUsers.push(obj1._id);
+
+		 				var studentID = obj1._id;
+	 					noticeUpdate.update( {"_id" :studentID } , {$addToSet : { MyRescUpdates : json } } ,function(err , result){if(err)throw err;} );
 		 				var tempArray = updates[obj1._id];
 		
-						console.re.log("TempArray contains :"+JSON.stringify(tempArray));
+						console.log("TempArray contains :"+JSON.stringify(tempArray));
 						if(tempArray != null){
-							console.re.log("Array not empty .. ");
+							console.log("Array not empty .. ");
 								tempArray.push(json);
 							updates[obj1._id] = tempArray;
 						}else{
 		
-							console.re.log("Array empty .. creating the array");
+							console.log("Array empty .. creating the array");
 		
 							tempArray = [];
 							tempArray.push(json);
-							console.re.log("Code str is "+obj1._id);
+							console.log("Code str is "+obj1._id);
 							updates[obj1._id] = tempArray;
 		
 		
@@ -357,18 +434,19 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		 		
 		 		 
 		 	}
-		 	console.re.log("Send notifications to "+validUsers);
-		 	console.re.log("Updates array is "+JSON.stringify(updates));
+		 	console.log("Send notifications to "+validUsers);
+		 	console.log("Updates array is "+JSON.stringify(updates));
 			
 			
 			
 			
 			});
+
 		 
 			
 			
 		}else{
-		console.re.log("Request is not accepted");
+		console.log("Request is not accepted");
 			
 			// request is not accepted
 		}
@@ -376,39 +454,39 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		var codeStr = [RescCode];	
 	
 		var array = updates[codeStr];
-		console.re.log("Initially ..."+JSON.stringify(array));
+		console.log("Initially ..."+JSON.stringify(array));
 		if(array != null){
 		array = array.filter(function(el){ return el.RequestFacEID != reqCode; });
 		if(array.length == 0){
 				delete updates[codeStr];
-				console.re.log("array length 0");
+				console.log("array length 0");
 			}else{
 				updates[codeStr] = array;
 			}
 		}
-		console.re.log("filtered.... "+JSON.stringify(updates));
+		console.log("filtered.... "+JSON.stringify(updates));
 		// add the new object for reqCode.
 		codeStr = [reqCode];	
 		var tempArray = updates[codeStr];
 		
-		console.re.log("TempArray contains :"+JSON.stringify(tempArray));
+		console.log("TempArray contains :"+JSON.stringify(tempArray));
 		if(tempArray != null){
-			console.re.log("Array not empty .. ");
+			console.log("Array not empty .. ");
 			tempArray.push(json);
 			updates[codeStr] = tempArray;
 		}else{
 		
-			console.re.log("Array empty .. creating the array");
+			console.log("Array empty .. creating the array");
 		
 			tempArray = [];
 			tempArray.push(json);
-			console.re.log("Code str is "+codeStr);
+			console.log("Code str is "+codeStr);
 			updates[codeStr] = tempArray;
 		
 		
 		}
 		
-		console.re.log(updates);
+		console.log(updates);
 			
 		
 		
@@ -513,7 +591,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 
 
 client.listen(port);
-console.re.log("Connected on port "+port);
+console.log("Connected on port "+port);
 
 //code ends
 

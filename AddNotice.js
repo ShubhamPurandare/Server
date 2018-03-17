@@ -7,7 +7,7 @@ var coll2 = db.collection("MyUpdates");
 	
 // 3)	
 	var insertPost = function(noticeFor){  // uploads the post in posts collection
-	coll.insert( {  title : title , desc : desc , sender_id : sender_id,  sender_name : sender_name ,
+	coll.insert( {  _id : pid , title : title , desc : desc , sender_id : sender_id,  sender_name : sender_name ,
 						 		validUsers : noticeFor  , isImageAttached : isImageAttached , isPDFAttached : isPDFAttached
 						 		, isPPTAttached : isPPTAttached  , isDocAttached : isDocAttached ,isExcelAttached:isExcelAttached } , function(error,obj){
 								if(error){
@@ -156,6 +156,7 @@ var coll2 = db.collection("MyUpdates");
 	
 	// 1)
 	var coll1 = db.collection("basicUserDetails");
+	var pid = jsonObj._id;
 	var sender_id = jsonObj.ID;
 	var sender_name = jsonObj.Name;
 	var title = jsonObj.Title;
@@ -171,8 +172,8 @@ var coll2 = db.collection("MyUpdates");
 	if (isExcelAttached == 1 ) {
 		var encodedExcel = jsonObj.EXCEL;
 		var date = new Date().toISOString();
-		var f = sender_id+"excel"+date;
-		var fn_image = sender_id+"excel"+date+".xls";
+		var f = jsonObj.excelFile;
+		var fn_image = f+".xls";
 		var obj = {};
 		obj['Excel'] = fn_image;
 		attachments.push(obj);
@@ -183,8 +184,8 @@ var coll2 = db.collection("MyUpdates");
 		var encodedImage = jsonObj.Image;
 		var date = new Date().toISOString();
 		//var imgType = jsonObj.ImageType;
-		var f = sender_id+"image"+date;
-		var fn_image = sender_id+"image"+date+".jpg";
+		var f = jsonObj.imageFile;
+		var fn_image = f+".jpg";
 		var obj = {};
 		obj['Image'] = fn_image;
 		attachments.push(obj);
@@ -193,8 +194,8 @@ var coll2 = db.collection("MyUpdates");
 	if (isPPTAttached == 1) {
 		var encodedPPT = jsonObj.PPT;
 		var date = new Date().toISOString();
-		var filename = sender_id+"ppt"+date;
-		var fn = sender_id+"ppt"+date+".ppt";
+		var filename = jsonObj.pptFile;
+		var fn = filename+".ppt";
 		var obj = {};
 		obj['PPT'] = fn;
 		attachments.push(obj);
@@ -204,8 +205,8 @@ var coll2 = db.collection("MyUpdates");
 	if (isPDFAttached == 1) {
 		var encodedPDF = jsonObj.PDF;
 		var date = new Date().toISOString();
-		var filename = sender_id+"pdf"+date;
-		var fn = sender_id+"pdf"+date+".pdf";
+		var filename = jsonObj.pdfFile;
+		var fn =filename+".pdf";
 		var obj = {};
 		obj['PDF'] = fn;
 		attachments.push(obj);
@@ -214,8 +215,8 @@ var coll2 = db.collection("MyUpdates");
 	if (isDocAttached == 1) {
 		var encodedDoc = jsonObj.DOC;
 		var date = new Date().toISOString();
-		var filename =sender_id+"doc"+date;
-		var fn =sender_id+"doc"+date+".docx";
+		var filename = jsonObj.docFile;
+		var fn = filename+".docx";
 		var obj = {};
 		obj['DOC'] = fn;
 		attachments.push(obj);

@@ -22,7 +22,7 @@ function base64_encode(file) {
 
 var getUserProfile = function(id){
 
-	console.re.log("In get profile");
+	console.log("In get profile");
 							
 	basicUserDetails.find(
 			{
@@ -33,7 +33,7 @@ var getUserProfile = function(id){
 			if (err) {throw err;}
 
 			if (res.length !=0 ) {  // get user dp
-					console.re.log("User found");
+					console.log("User found");
 							
 
 						var obj = res[0];
@@ -42,25 +42,25 @@ var getUserProfile = function(id){
 						var filename= obj.Display_picture;
 						var encodedImage = base64_encode(filename+".jpg"); 
 						if (encodedImage == null) {
-								console.re.log("couldnot find dp");
+								console.log("couldnot find dp");
 							
 							obj['Display_picture'] = "0";
 						}else{
 							obj['Display_picture'] = encodedImage;
-							console.re.log("DP found and loaded");
+							console.log("DP found and loaded");
 						}
 						
 					}else{
 						obj['Display_picture'] = "0";
 					}
 
-					console.re.log("Emitting socket now ...");
-						console.re.log("Profile is "+JSON.stringify(obj));
+					console.log("Emitting socket now ...");
+						console.log("Profile is "+JSON.stringify(obj));
 							
 					socket.emit('JSON', obj);
 
 			}else{
-				console.re.log("User profile not found");
+				console.log("User profile not found");
 			}
 
 
@@ -68,34 +68,34 @@ var getUserProfile = function(id){
 
 }
 
-				console.re.log("json string is "+jsonobj);
+				console.log("json string is "+jsonobj);
 				// check if user exists
-				console.re.log("logged in user is "+username + " Password "+password);
+				console.log("logged in user is "+username + " Password "+password);
 				users.find({
 					 $and:[
 						 {"username":username},
 						 {"password":password} 
 					      ]}
 					   ).limit(1).toArray( function(error , result){
-					console.re.log("username is "+jsonobj.username);
+					console.log("username is "+jsonobj.username);
 					if(error){
 						throw error;
 					}else{
 						
-						console.re.log(result.length);
+						console.log(result.length);
 						if(result.length != 0){//user exists hence log in the user .
-							console.re.log("User found");						
-							console.re.log(result);
+							console.log("User found");						
+							console.log(result);
 							// load backup....
 							 
 							// var obj = result[0];
 							 //var GrNumber = obj._id;
-							 //console.re.log("Gr Number is :"+GrNumber);
+							 //console.log("Gr Number is :"+GrNumber);
 							 
 							 var finalObj = {};// final json obj which will store all data backup.
 							 
 							/* finalObj["Contents"] = allFieldsString;
-							 console.re.log("Currently FinalObj contains :"+finalObj);
+							 console.log("Currently FinalObj contains :"+finalObj);
 							 
 							 for(var k=0 ; k< allFields.length ; k++){
 							 
@@ -109,13 +109,13 @@ var getUserProfile = function(id){
 							var resObject = result[0];
 						
 						}else{ // user doesnot exists 
-							console.re.log("No corresponding account found , please signup first");
+							console.log("No corresponding account found , please signup first");
 							isAuth = 0;
 							
 						}
 						socket.emit('loginResult' , isAuth );
 						if(isAuth == 1){
-								console.re.log("Getting profile info");
+								console.log("Getting profile info");
 								getUserProfile(resObject._id);
 							
 						}
@@ -133,8 +133,8 @@ var getUserProfile = function(id){
 				
 		function getBackup(finalObj, collectionName , GrNumber , key, index, lastIndex){
 		
-			console.re.log("Loop "+index+" Getting backup for collectionName :"+collectionName +" and GrNumber :"+GrNumber +" key is "+key);
-			console.re.log("Current status of final obj is "+finalObj);
+			console.log("Loop "+index+" Getting backup for collectionName :"+collectionName +" and GrNumber :"+GrNumber +" key is "+key);
+			console.log("Current status of final obj is "+finalObj);
 			
 			// get Backup
 			
@@ -143,7 +143,7 @@ var getUserProfile = function(id){
 			cursor.each(function (err, doc) {
 
      			if (doc != null) {
-            			console.re.log(doc);
+            			console.log(doc);
             			finalObj[key] = doc;
             			
             			// check if index equals last index, then emit a socket
@@ -151,7 +151,7 @@ var getUserProfile = function(id){
             			if(index == lastIndex){
             			
             			//socket.emit('AllBackup' , finalObj);
-            			console.re.log("Emmitting socket...");
+            			console.log("Emmitting socket...");
             			
             			// emit socket..
             			
@@ -162,7 +162,7 @@ var getUserProfile = function(id){
 
         		}else{
         		
-        			console.re.log("No corresponding entry found for key :"+key);
+        			console.log("No corresponding entry found for key :"+key);
         			
         		} 
 		

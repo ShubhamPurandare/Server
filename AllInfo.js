@@ -29,6 +29,11 @@ console.re.log("In Allinfo listener...");
 		console.re.log("Collection is : "+ collectionName);
 		var c = db.collection(collectionName); // takes the collection name and creates a collection variable
 
+		if(collectionName=="TimeTable")
+		{
+			var id=infoObj._id;
+			getFreeFaculties.calculateArrayOfFree(id,db);
+		}
 		
 		var infoObj = JSON.parse(info);		
 		console.re.log(infoObj);  // correctly parsed		
