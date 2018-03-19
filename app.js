@@ -8,7 +8,7 @@ var app = express()
 app.get('/dp_pics/:id', function (req, res, next) {
     var id = req.params.id;
     console.log('The id: ' + id);
- res.sendFile('/home/ubuntu/mainServer/Server/Medi/UserDP/'+id);
+ res.sendFile('/home/ubuntu/mainServer/Server/Media/UserDP/'+id);
 
 
 // res.sendFile('/home/shubham/'+id);
