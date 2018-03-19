@@ -32,6 +32,7 @@ var getFile = require("./getFile");
 var updateTT = require("./updateTT");
 var getAttachments = require("./getAttachments");
 var Facs = require("./freeFacs");
+var postDelete = require("./postDelete");
 //var getDocbyID = require("./");
 var fs = require('fs');
 var updates = {};
@@ -152,6 +153,11 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	socket.on('findMatch' , function(JsonData){
 		getMatch.getData(clients , JsonData , db , socket);
 	});
+
+	socket.on('postDeleteRequest' , function(JsonData){
+		postDelete.delete(clients , JsonData , db , socket);
+	});
+
 
 
 
