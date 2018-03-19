@@ -297,6 +297,13 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						socket.emit('updates',"0" ); // no updates
 					}
 
+
+					var deletedPostsArray = obj.MyDeletedPostsUpdates;
+					if (deletedPostsArray != null  && deletedPostsArray.length != 0) {
+
+						socket.emit('postDeleteResult' , deletedPostsArray);
+					}
+
 				}
 			}
 	});
@@ -326,7 +333,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		
 		}
 		
-	});
+	});  // end of look for updates
+
+
 	
 	socket.on('RespondToReq' , function(data){
 	

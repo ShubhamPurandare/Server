@@ -9,6 +9,11 @@ exports.delete = function(clients , JsonData , db , socket)
 	var noticeUpdate = db.collection("MyUpdates");
 				
 
+	var deletPostIDFromBUD = function(pid , sid){
+
+		basicUserDetails.update( {"_id" :sid } , {$pull : { postsArray :  pid }} ,function(err , result){if(err)throw err;} );
+		
+	}
 
 	var addDeleteUpdate = function(pid ,id ){
 
@@ -49,6 +54,7 @@ exports.delete = function(clients , JsonData , db , socket)
 
 		if (res.length!=0) {
 			var obj = res[0];
+			var senderID= obj.sender_id;
 			var validUsersArray = obj.validUsers;
 			// add a delete req in Updates of all validUsers
 			// delete this post
@@ -57,10 +63,15 @@ exports.delete = function(clients , JsonData , db , socket)
 				var id = validUsersArray[i];
 				addDeleteUpdate(pid ,id );
 			}
+
+			deletPostIDFromBUD(pid , senderID);
 			
 
 			postsCall.remove({_id : pid});
 			socket.emit("postDeleteResult" , "1");
+
+		}else{
+			socket.emit("postDeleteResult" , "0"); // post was already deleted, no valid users found
 
 		}
 	
