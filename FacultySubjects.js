@@ -1,20 +1,25 @@
 
 
 
-exports.facultySubjects = function(clients, facultySubjColl, socket, db , jsonobj){
+exports.facultySubjects = function(clients, socket, db , jsonobj){
 var SubjectsColl = db.collection("Subjects");
 	
 
 		
 
-console.re.log("In facultySubjects method");
+console.log("In facultySubjects method");
 			var data = JSON.parse(jsonobj); //convert into json obj
-			console.log("data is "+JSON.stringify(data));
+			//var data = jsonobj;
+				//	console.log("data is "+JSON.stringify(data));
+			console.log(data );
+			console.log(jsonobj);
 			var eid = data.EID;
 			var branch = data.Branch;
 			var sem = data.Sem;
 			var cr = data.CurrentYear;
-			console.re.log("EID "+eid + " branch "+branch + " Sem "+sem + "CurrentYear is "+cr);
+			var facultySubjColl = db.collection("FacultyAllocation");
+			var hashmap = db.collection("FacultyAllocationHashMap");
+			console.log("EID "+eid + " branch "+branch + " Sem "+sem + "CurrentYear is "+cr);
 			var TE = [];
 			var SE = [];
 			var BE = [];
@@ -22,26 +27,27 @@ console.re.log("In facultySubjects method");
 			facultySubjColl.find().forEach(  function(doc){
 	
 	
-				//console.re.log(doc._id);
+				//console.log(doc._id);
 				var id = doc._id;
 				if(id.indexOf(branch)>=0  && id.indexOf(sem)>=0  && id.indexOf(cr)>=0){
-					console.re.log("Valid Document");
+					console.log("Valid Document");
 					var object = doc.object;
-					//console.re.log(object);
+					//console.log(object);
 			
 					for(var i=0 ; i<object.length; i++){
 						var temp = object[i];
+						console.log("before matching"+eid);
 						if( temp.FacultyCode == eid   ){
 				
-							console.re.log("Match found ");
-							console.re.log(temp);
+							console.log("Match found ");
+							console.log(temp);
 							var CurrYear = id.substr(-4);
 							var main = id.substr(-5);
 							var div = main.substr(0 , 1);
 							var one = id.substr(-11);
 							var year = one.substr(0,2);
 												
-						//	console.re.log("Subject is "+temp.Subject);
+						//	console.log("Subject is "+temp.Subject);
 							var obj1 = {}
 							obj1["Subject"] = temp.Subject;
 							obj1["Div"] = div;
@@ -50,15 +56,15 @@ console.re.log("In facultySubjects method");
 					
 							switch(year){
 							case 'SE' :  SE.push(obj1); 
-									console.re.log("Added in SE");
+									console.log("Added in SE");
 								break;
 							case 'TE' :  TE.push(obj1);
 					
-									console.re.log("Added in TE");
+									console.log("Added in TE");
 								break;
 							case 'BE' :  BE.push(obj1); 
 					
-									console.re.log("Added in BE");
+									console.log("Added in BE");
 								break;
 								}
 						
@@ -70,7 +76,7 @@ console.re.log("In facultySubjects method");
 							
 				
 						}else{
-							console.re.log("Match not found ");
+							console.log("Match not found ");
 				
 				
 						}
@@ -78,10 +84,36 @@ console.re.log("In facultySubjects method");
 			
 			
 				}else{
-					console.re.log("Not a valid document");
+					console.log("Not a valid document");
 				}
-				console.re.log("Final object is"+JSON.stringify(finalObj));
-							socket.emit("FacultySubjResult" , finalObj);
+				console.log("Final object is"+JSON.stringify(finalObj));
+						socket.emit("FacultySubjResult" , finalObj);
+
+						// load this data in facultyAvailabillty
+
+						hashmap.find({_id : branch+cr }).toArray(function(err, res){
+
+							if(err){
+
+								throw err;}
+
+
+							if (res.length !=0) {
+
+								// update
+								var obj = {};
+								console.log(eid);
+								 obj['eid']=finalObj;
+								
+								hashmap.update({_id:branch+cr},{$set:obj});
+							}else{
+								//insert
+
+								hashmap.insert({ _id : branch+cr  });
+							}
+
+						});
+
 				
 				//lookForStudents(finalObj, SubjectsColl);
 							
@@ -90,11 +122,7 @@ console.re.log("In facultySubjects method");
 			
 			
 			
-			clients--;
-			console.re.log("Client disconnected.... and clients are "+clients);
 			
-				
-		
 	
 		
 
@@ -122,24 +150,24 @@ function lookForStudents(finalObj , SubjectsColl){
 				var obj = arrOfYear[j];
 				var subCode = obj['SubjCode'];
 				var div = obj['Div'];
-				console.re.log("Subject code is "+subCode + " And div is "+div);	
+				console.log("Subject code is "+subCode + " And div is "+div);	
 				
 					SubjectsColl.aggregate([{$match:{ "_id" : subCode }  },{ $unwind: "$students"  },{ $lookup : { from: 							"basicUserDetails", localField: 							"students",foreignField:"_id", as:"matched"  }}   ]).toArray( function(error , result){
 			
-			//console.re.log(result);
+			//console.log(result);
 			
 			for(var i=0; i<result.length; i++){
 		 	
 		 		var obj = result[i];
-		 		//console.re.log(obj);
+		 		//console.log(obj);
 		 		 var matched = obj.matched;
-		 		//console.re.log(matched);
+		 		//console.log(matched);
 		 		if(matched.length >0){
 		 			var obj1 = matched[0];
 		 			if(obj1.div == div){
-		 				console.re.log("yessssssssssssss");
+		 				console.log("yessssssssssssss");
 		 				validStudents.push(obj1._id);
-		 				console.re.log("Valid students are "+validStudents);
+		 				console.log("Valid students are "+validStudents);
 			
 		 				
 		 			}
@@ -147,10 +175,10 @@ function lookForStudents(finalObj , SubjectsColl){
 		 		
 		 		 
 		 	}
-		 	console.re.log("Loop "+j+" ended..");
+		 	console.log("Loop "+j+" ended..");
 			
 			obj['StudentsList'] = validStudents;
-			console.re.log("Valid students are "+validStudents);
+			console.log("Valid students are "+validStudents);
 			j++;
 			
 			validStudents = [];

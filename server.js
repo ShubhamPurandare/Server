@@ -109,7 +109,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 	
 	socket.on('UpdateTT' , function (jsonObj){
 	
-		updateTT.update(db , socket , jsonObj , TimeTable );
+	//	updateTT.update(db , socket , jsonObj , TimeTable );
 	});
 	
 	socket.on('FetchAttachments' , function(jsonObj){
@@ -177,7 +177,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		noticeUpdate.update( {"_id" :code } , {$addToSet : { MyRescUpdates : object  } } ,function(err , result){if(err)throw err;} );
 
 		console.log("TempArray contains :"+JSON.stringify(tempArray));
-		if(tempArray != null){
+	/*	if(tempArray != null){
 			console.log("Array not empty .. ");
 			tempArray.push(object);
 			updates[codeStr] = tempArray;
@@ -191,9 +191,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			updates[codeStr] = tempArray;
 		
 		
-		}
+		}*/
 		
-		console.log(updates);
+	//	console.log(updates);
 			
 	
 	
@@ -276,8 +276,9 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						// the array consists of some updates
 						for (var i=0 ;i<=arrayOfResc.length - 1;  i++) {
 							var obj =	arrayOfResc[i];
-							if(   (obj.isViewed == 0  && obj.RequestType == "LecRescheduleRequest" )  ||  (obj.RequestType =="LecRescheduleResponse" ))
+							if(   (obj.isViewed == 0  && obj.RequestType == "LecRescheduleRequest" ) || (obj.isViewed == null  && obj.RequestType == "LecRescheduleRequest" )||  (obj.RequestType =="LecRescheduleResponse" ))
 							{
+								console.log("There are some resc updates");
 								arrayOfRescToSend.push(obj);
 								if (obj.RequestType =="LecRescheduleResponse" ) {
 
@@ -308,7 +309,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			}
 	});
 
-		if(objToSend != null){
+		/*if(objToSend != null){
 		
 			
 			console.log("Data found ...."+JSON.stringify(objToSend));
@@ -331,7 +332,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 			console.log("No Data found ....");
 			socket.emit('updates',"0" );
 		
-		}
+		}*/
 		
 	});  // end of look for updates
 
@@ -431,15 +432,15 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 						if(tempArray != null){
 							console.log("Array not empty .. ");
 								tempArray.push(json);
-							updates[obj1._id] = tempArray;
+						//	updates[obj1._id] = tempArray;
 						}else{
 		
-							console.log("Array empty .. creating the array");
+						//	console.log("Array empty .. creating the array");
 		
-							tempArray = [];
-							tempArray.push(json);
-							console.log("Code str is "+obj1._id);
-							updates[obj1._id] = tempArray;
+						//	tempArray = [];
+						//	tempArray.push(json);
+						//	console.log("Code str is "+obj1._id);
+						//	updates[obj1._id] = tempArray;
 		
 		
 						}
@@ -574,7 +575,7 @@ mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' 
 		
 		socket.on('facultySubjects', function(jsonobj){
 		
-			facultySubj.facultySubjects(clients, facultySubjColl, socket , db , jsonobj);
+			facultySubj.facultySubjects(clients, socket , db , jsonobj);
 		
 		});
 // ---------------------------------------------REGISTER----------------------------------------------------------------------------------
