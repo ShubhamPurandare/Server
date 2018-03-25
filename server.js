@@ -43,13 +43,14 @@ var print = function(object)
 	console.log(JSON.stringify(object));
 }
 
-mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , database){
+//mongo.connect('mongodb://BornCoders:radarockssmp1@ds111529.mlab.com:11529/viit' , function(err , database){
+mongo.connect('mongodb://BornCoders:Futuregoogler123@ds223009.mlab.com:23009/mainproject', function(err , database){
 
 	if(err){
 		throw err;
 		console.log("Error connecting to mlab ...");
 	}else{
-		var db = database.db("viit");
+		var db = database.db("mainproject");
 		
 
 		console.log("Connected to mlab ...");
